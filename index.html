@@ -5,54 +5,1622 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Wrath & Glory SheetBuilder — a static character + party sheet tool." />
-    <title>Ramsesoriginal's Warhammer 40k Wrath & Glory Sheet Builder - Coming Soon</title>
+      content="Ramsesoriginal's Warhammer 40k Wrath & Glory Sheet Builder - character sheet (static, print-friendly, offline-first)." />
+    <title>Ramsesoriginal's Warhammer 40k Wrath & Glory Sheet Builder</title>
 
-    <link rel="stylesheet" href="./css/styles.css" />
+    <!-- Order matters: normalize → layout → style -->
+    <link rel="stylesheet" href="./css/normalize.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- JS intentionally minimal for this milestone -->
     <script defer src="./js/main.js"></script>
   </head>
 
   <body>
-    <header class="site-header" role="banner">
-      <div class="container">
-        <h1 class="brand">wg-sheetbuilder</h1>
-        <p class="tagline">
-          Wrath &amp; Glory character + party sheets - static, offline-first, print-friendly.
-        </p>
+    <a class="skip-link" href="#sheet">Skip to sheet</a>
+
+    <header class="app-header screen-only" role="banner">
+      <div class="wrap">
+        <div class="brand">
+          <strong>wg-sheetbuilder</strong>
+          <span class="muted">Character Sheet (static milestone)</span>
+        </div>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="#identity">Identity</a></li>
+            <li><a href="#attributes">Attributes</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#gear">Gear</a></li>
+            <li><a href="#powers">Powers</a></li>
+            <li><a href="#injuries">Injuries</a></li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <main class="container" id="main" role="main">
-      <section class="card" aria-labelledby="coming-soon-title">
-        <h2 id="coming-soon-title">Coming Soon</h2>
-        <p>
-          This project is bootstrapped and deployed. Next step: build a minimal sheet data model and
-          a printable layout.
+    <main id="sheet" class="wrap" role="main">
+      <header class="sheet-title">
+        <h1>Character Sheet</h1>
+        <p class="muted">
+          Field-complete and print-friendly. Calculations, storage, and sharing come in later
+          milestones.
         </p>
+      </header>
 
-        <ul class="bullets">
-          <li>Mobile-first UI</li>
-          <li>Minimal JavaScript (calc + storage only)</li>
-          <li>Print CSS for clean PDFs</li>
-          <li>Local storage + optional Gist sync later</li>
-        </ul>
+      <form class="sheet" action="#" method="post">
+        <!-- IDENTITY -->
+        <section id="identity" class="card" aria-labelledby="identity-title">
+          <h2 id="identity-title">Identity</h2>
 
-        <div class="actions">
-          <a class="button" href="https://github.com/" target="_blank" rel="noopener noreferrer">
-            View repo
-          </a>
-          <button class="button button-secondary" type="button" id="btn-smoke-test">
-            Run smoke test
-          </button>
-        </div>
+          <fieldset class="grid" aria-describedby="identity-help">
+            <legend class="sr-only">Character identity</legend>
 
-        <p class="fineprint">Deployed via GitHub Pages from <code>main</code> / root.</p>
-      </section>
+            <p id="identity-help" class="sr-only">
+              Enter character and campaign identity fields. All fields are printable.
+            </p>
+
+            <div class="field">
+              <label for="characterName">Character name</label>
+              <input id="characterName" name="characterName" type="text" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="playerName">Player name</label>
+              <input id="playerName" name="playerName" type="text" autocomplete="name" />
+            </div>
+
+            <div class="field">
+              <label for="archetype">Archetype</label>
+              <input id="archetype" name="archetype" type="text" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="species">Species</label>
+              <input id="species" name="species" type="text" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="faction">Faction</label>
+              <input id="faction" name="faction" type="text" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="keywords">Keywords</label>
+              <input
+                id="keywords"
+                name="keywords"
+                type="text"
+                autocomplete="off"
+                placeholder="Comma-separated" />
+            </div>
+
+            <div class="field">
+              <label for="background">Background</label>
+              <input id="background" name="background" type="text" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="tier">Tier</label>
+              <input id="tier" name="tier" type="number" inputmode="numeric" min="0" />
+            </div>
+
+            <div class="field">
+              <label for="rank">Rank</label>
+              <input id="rank" name="rank" type="number" inputmode="numeric" min="0" />
+            </div>
+
+            <div class="field span-2">
+              <label for="objective">Objective</label>
+              <textarea id="objective" name="objective" rows="2"></textarea>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- ATTRIBUTES -->
+        <section id="attributes" class="card" aria-labelledby="attributes-title">
+          <h2 id="attributes-title">Attributes</h2>
+
+          <div class="table-wrap">
+            <table class="sheet-table">
+              <caption class="sr-only">
+                Attributes: rating, bonus, and total (total calculated later).
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Attribute</th>
+                  <th scope="col" class="num">Rating</th>
+                  <th scope="col" class="num">Bonus</th>
+                  <th scope="col" class="num">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Helper: keep IDs stable for future JS -->
+                <tr>
+                  <th scope="row">Strength (S)</th>
+                  <td>
+                    <label class="sr-only" for="attrSRating">Strength rating</label
+                    ><input
+                      id="attrSRating"
+                      name="attrSRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrSBonus">Strength bonus</label
+                    ><input
+                      id="attrSBonus"
+                      name="attrSBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="attrSTotal" class="num" aria-label="Strength total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Toughness (T)</th>
+                  <td>
+                    <label class="sr-only" for="attrTRating">Toughness rating</label
+                    ><input
+                      id="attrTRating"
+                      name="attrTRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrTBonus">Toughness bonus</label
+                    ><input
+                      id="attrTBonus"
+                      name="attrTBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="attrTTotal" class="num" aria-label="Toughness total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Agility (A)</th>
+                  <td>
+                    <label class="sr-only" for="attrARating">Agility rating</label
+                    ><input
+                      id="attrARating"
+                      name="attrARating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrABonus">Agility bonus</label
+                    ><input
+                      id="attrABonus"
+                      name="attrABonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="attrATotal" class="num" aria-label="Agility total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Initiative (I)</th>
+                  <td>
+                    <label class="sr-only" for="attrIRating">Initiative rating</label
+                    ><input
+                      id="attrIRating"
+                      name="attrIRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrIBonus">Initiative bonus</label
+                    ><input
+                      id="attrIBonus"
+                      name="attrIBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="attrITotal" class="num" aria-label="Initiative total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Willpower (Wil)</th>
+                  <td>
+                    <label class="sr-only" for="attrWilRating">Willpower rating</label
+                    ><input
+                      id="attrWilRating"
+                      name="attrWilRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrWilBonus">Willpower bonus</label
+                    ><input
+                      id="attrWilBonus"
+                      name="attrWilBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="attrWilTotal" class="num" aria-label="Willpower total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Intellect (Int)</th>
+                  <td>
+                    <label class="sr-only" for="attrIntRating">Intellect rating</label
+                    ><input
+                      id="attrIntRating"
+                      name="attrIntRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrIntBonus">Intellect bonus</label
+                    ><input
+                      id="attrIntBonus"
+                      name="attrIntBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="attrIntTotal" class="num" aria-label="Intellect total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Fellowship (Fel)</th>
+                  <td>
+                    <label class="sr-only" for="attrFelRating">Fellowship rating</label
+                    ><input
+                      id="attrFelRating"
+                      name="attrFelRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="attrFelBonus">Fellowship bonus</label
+                    ><input
+                      id="attrFelBonus"
+                      name="attrFelBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="attrFelTotal" class="num" aria-label="Fellowship total"></output>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="card" aria-labelledby="skills-title">
+          <h2 id="skills-title">Skills</h2>
+
+          <div class="table-wrap">
+            <table class="sheet-table">
+              <caption class="sr-only">
+                Skills: rating, bonus, and total (total calculated later).
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Attribute</th>
+                  <th scope="col" class="num">Rating</th>
+                  <th scope="col" class="num">Bonus</th>
+                  <th scope="col" class="num">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Athletics</th>
+                  <td>S</td>
+                  <td>
+                    <label class="sr-only" for="skAthRating">Athletics rating</label
+                    ><input
+                      id="skAthRating"
+                      name="skAthRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skAthBonus">Athletics bonus</label
+                    ><input
+                      id="skAthBonus"
+                      name="skAthBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skAthTotal" class="num" aria-label="Athletics total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Awareness</th>
+                  <td>Int</td>
+                  <td>
+                    <label class="sr-only" for="skAwaRating">Awareness rating</label
+                    ><input
+                      id="skAwaRating"
+                      name="skAwaRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skAwaBonus">Awareness bonus</label
+                    ><input
+                      id="skAwaBonus"
+                      name="skAwaBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skAwaTotal" class="num" aria-label="Awareness total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Ballistic Skill</th>
+                  <td>A</td>
+                  <td>
+                    <label class="sr-only" for="skBsRating">Ballistic Skill rating</label
+                    ><input
+                      id="skBsRating"
+                      name="skBsRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skBsBonus">Ballistic Skill bonus</label
+                    ><input
+                      id="skBsBonus"
+                      name="skBsBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skBsTotal" class="num" aria-label="Ballistic Skill total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Cunning</th>
+                  <td>Fel</td>
+                  <td>
+                    <label class="sr-only" for="skCunRating">Cunning rating</label
+                    ><input
+                      id="skCunRating"
+                      name="skCunRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skCunBonus">Cunning bonus</label
+                    ><input
+                      id="skCunBonus"
+                      name="skCunBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skCunTotal" class="num" aria-label="Cunning total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Deception</th>
+                  <td>Fel</td>
+                  <td>
+                    <label class="sr-only" for="skDecRating">Deception rating</label
+                    ><input
+                      id="skDecRating"
+                      name="skDecRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skDecBonus">Deception bonus</label
+                    ><input
+                      id="skDecBonus"
+                      name="skDecBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skDecTotal" class="num" aria-label="Deception total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Insight</th>
+                  <td>Fel</td>
+                  <td>
+                    <label class="sr-only" for="skInsRating">Insight rating</label
+                    ><input
+                      id="skInsRating"
+                      name="skInsRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skInsBonus">Insight bonus</label
+                    ><input
+                      id="skInsBonus"
+                      name="skInsBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skInsTotal" class="num" aria-label="Insight total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Intimidation</th>
+                  <td>Wil</td>
+                  <td>
+                    <label class="sr-only" for="skIntimRating">Intimidation rating</label
+                    ><input
+                      id="skIntimRating"
+                      name="skIntimRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skIntimBonus">Intimidation bonus</label
+                    ><input
+                      id="skIntimBonus"
+                      name="skIntimBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skIntimTotal" class="num" aria-label="Intimidation total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Investigation</th>
+                  <td>Int</td>
+                  <td>
+                    <label class="sr-only" for="skInvRating">Investigation rating</label
+                    ><input
+                      id="skInvRating"
+                      name="skInvRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skInvBonus">Investigation bonus</label
+                    ><input
+                      id="skInvBonus"
+                      name="skInvBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skInvTotal" class="num" aria-label="Investigation total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Leadership</th>
+                  <td>Wil</td>
+                  <td>
+                    <label class="sr-only" for="skLeadRating">Leadership rating</label
+                    ><input
+                      id="skLeadRating"
+                      name="skLeadRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skLeadBonus">Leadership bonus</label
+                    ><input
+                      id="skLeadBonus"
+                      name="skLeadBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skLeadTotal" class="num" aria-label="Leadership total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Medicae</th>
+                  <td>Int</td>
+                  <td>
+                    <label class="sr-only" for="skMedRating">Medicae rating</label
+                    ><input
+                      id="skMedRating"
+                      name="skMedRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skMedBonus">Medicae bonus</label
+                    ><input
+                      id="skMedBonus"
+                      name="skMedBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skMedTotal" class="num" aria-label="Medicae total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Persuasion</th>
+                  <td>Fel</td>
+                  <td>
+                    <label class="sr-only" for="skPerRating">Persuasion rating</label
+                    ><input
+                      id="skPerRating"
+                      name="skPerRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skPerBonus">Persuasion bonus</label
+                    ><input
+                      id="skPerBonus"
+                      name="skPerBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skPerTotal" class="num" aria-label="Persuasion total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Pilot</th>
+                  <td>A</td>
+                  <td>
+                    <label class="sr-only" for="skPilRating">Pilot rating</label
+                    ><input
+                      id="skPilRating"
+                      name="skPilRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skPilBonus">Pilot bonus</label
+                    ><input
+                      id="skPilBonus"
+                      name="skPilBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skPilTotal" class="num" aria-label="Pilot total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Psychic Mastery</th>
+                  <td>Wil</td>
+                  <td>
+                    <label class="sr-only" for="skPsyRating">Psychic Mastery rating</label
+                    ><input
+                      id="skPsyRating"
+                      name="skPsyRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skPsyBonus">Psychic Mastery bonus</label
+                    ><input
+                      id="skPsyBonus"
+                      name="skPsyBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skPsyTotal" class="num" aria-label="Psychic Mastery total"></output>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Scholar</th>
+                  <td>Int</td>
+                  <td>
+                    <label class="sr-only" for="skSchRating">Scholar rating</label
+                    ><input
+                      id="skSchRating"
+                      name="skSchRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skSchBonus">Scholar bonus</label
+                    ><input
+                      id="skSchBonus"
+                      name="skSchBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skSchTotal" class="num" aria-label="Scholar total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Stealth</th>
+                  <td>A</td>
+                  <td>
+                    <label class="sr-only" for="skSteRating">Stealth rating</label
+                    ><input
+                      id="skSteRating"
+                      name="skSteRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skSteBonus">Stealth bonus</label
+                    ><input
+                      id="skSteBonus"
+                      name="skSteBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skSteTotal" class="num" aria-label="Stealth total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Survival</th>
+                  <td>Wil</td>
+                  <td>
+                    <label class="sr-only" for="skSurRating">Survival rating</label
+                    ><input
+                      id="skSurRating"
+                      name="skSurRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skSurBonus">Survival bonus</label
+                    ><input
+                      id="skSurBonus"
+                      name="skSurBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skSurTotal" class="num" aria-label="Survival total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Tech</th>
+                  <td>Int</td>
+                  <td>
+                    <label class="sr-only" for="skTechRating">Tech rating</label
+                    ><input
+                      id="skTechRating"
+                      name="skTechRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skTechBonus">Tech bonus</label
+                    ><input
+                      id="skTechBonus"
+                      name="skTechBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td><output id="skTechTotal" class="num" aria-label="Tech total"></output></td>
+                </tr>
+                <tr>
+                  <th scope="row">Weapon Skill</th>
+                  <td>I</td>
+                  <td>
+                    <label class="sr-only" for="skWsRating">Weapon Skill rating</label
+                    ><input
+                      id="skWsRating"
+                      name="skWsRating"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="skWsBonus">Weapon Skill bonus</label
+                    ><input
+                      id="skWsBonus"
+                      name="skWsBonus"
+                      class="num"
+                      type="number"
+                      inputmode="numeric" />
+                  </td>
+                  <td>
+                    <output id="skWsTotal" class="num" aria-label="Weapon Skill total"></output>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SURVIVAL + RESOURCES -->
+        <section class="card" aria-labelledby="survival-title">
+          <h2 id="survival-title">Survival &amp; Resources</h2>
+
+          <div class="grid-3">
+            <fieldset class="stack">
+              <legend>Wounds</legend>
+              <div class="field inline">
+                <label for="woundsCurrent">Current</label>
+                <input
+                  id="woundsCurrent"
+                  name="woundsCurrent"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <div class="field inline">
+                <label for="woundsMax">Max</label>
+                <input
+                  id="woundsMax"
+                  name="woundsMax"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <p class="hint">Later calc: T + (2 × Tier)</p>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>Shock</legend>
+              <div class="field inline">
+                <label for="shockCurrent">Current</label>
+                <input
+                  id="shockCurrent"
+                  name="shockCurrent"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <div class="field inline">
+                <label for="shockMax">Max</label>
+                <input
+                  id="shockMax"
+                  name="shockMax"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <p class="hint">Later calc: Wil + Tier</p>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>Wrath</legend>
+              <div class="field inline">
+                <label for="wrathCurrent">Current</label>
+                <input
+                  id="wrathCurrent"
+                  name="wrathCurrent"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <div class="field inline">
+                <label for="wrathMax">Max</label>
+                <input
+                  id="wrathMax"
+                  name="wrathMax"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <p class="hint">Max varies by table/framework; allow override.</p>
+            </fieldset>
+          </div>
+
+          <div class="grid-3 top-gap">
+            <fieldset class="stack">
+              <legend>Defence &amp; Resilience</legend>
+
+              <div class="field inline">
+                <label for="defence">Defence</label>
+                <input id="defence" name="defence" class="num" type="number" inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Initiative − 1</p>
+
+              <div class="field inline">
+                <label for="resBase">Resilience (base)</label>
+                <input id="resBase" name="resBase" class="num" type="number" inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Toughness + 1</p>
+
+              <div class="field inline">
+                <label for="armourAR">Armour bonus (AR)</label>
+                <input
+                  id="armourAR"
+                  name="armourAR"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <div class="field inline">
+                <label for="resTotal">Resilience (total)</label>
+                <input
+                  id="resTotal"
+                  name="resTotal"
+                  class="num"
+                  type="number"
+                  inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: base + AR</p>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>Social/Resolve</legend>
+
+              <div class="field inline">
+                <label for="conviction">Conviction</label>
+                <input
+                  id="conviction"
+                  name="conviction"
+                  class="num"
+                  type="number"
+                  inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Wil</p>
+
+              <div class="field inline">
+                <label for="resolve">Resolve</label>
+                <input id="resolve" name="resolve" class="num" type="number" inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Wil − 1</p>
+
+              <div class="field inline">
+                <label for="determination">Determination</label>
+                <input
+                  id="determination"
+                  name="determination"
+                  class="num"
+                  type="number"
+                  inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Toughness</p>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>World Stats</legend>
+
+              <div class="field inline">
+                <label for="influence">Influence</label>
+                <input
+                  id="influence"
+                  name="influence"
+                  class="num"
+                  type="number"
+                  inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Fel − 1</p>
+
+              <div class="field inline">
+                <label for="wealth">Wealth</label>
+                <input id="wealth" name="wealth" class="num" type="number" inputmode="numeric" />
+              </div>
+              <p class="hint">Later calc: Tier</p>
+
+              <div class="field inline">
+                <label for="speed">Speed</label>
+                <input
+                  id="speed"
+                  name="speed"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <div class="field inline">
+                <label for="size">Size</label>
+                <input id="size" name="size" type="text" />
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="grid top-gap">
+            <fieldset class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+              <legend>Stealth helpers</legend>
+
+              <div class="field">
+                <label for="stealthScore">Stealth score</label>
+                <input id="stealthScore" name="stealthScore" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="passiveAwareness">Passive Awareness</label>
+                <input
+                  id="passiveAwareness"
+                  name="passiveAwareness"
+                  class="num"
+                  type="number"
+                  inputmode="numeric" />
+                <p class="hint">Later calc: Awareness total ÷ 2</p>
+              </div>
+            </fieldset>
+          </div>
+        </section>
+
+        <!-- WARGEAR -->
+        <section id="gear" class="card" aria-labelledby="gear-title">
+          <h2 id="gear-title">Wargear</h2>
+
+          <h3 class="subhead">Weapons</h3>
+          <div class="table-wrap">
+            <table class="sheet-table compact">
+              <thead>
+                <tr>
+                  <th scope="col">Weapon</th>
+                  <th scope="col" class="num">Dice pool</th>
+                  <th scope="col" class="num">Damage</th>
+                  <th scope="col" class="num">ED</th>
+                  <th scope="col" class="num">AP</th>
+                  <th scope="col" class="num">Salvo</th>
+                  <th scope="col">Range</th>
+                  <th scope="col">Traits</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 6 starter rows; later JS can add/remove -->
+                <!-- Row template: weapon1..weapon6 -->
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn1Name">Weapon 1 name</label
+                    ><input id="wpn1Name" name="wpn1Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Pool">Weapon 1 dice pool</label
+                    ><input id="wpn1Pool" name="wpn1Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Dmg">Weapon 1 damage</label
+                    ><input id="wpn1Dmg" name="wpn1Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Ed">Weapon 1 ED</label
+                    ><input id="wpn1Ed" name="wpn1Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Ap">Weapon 1 AP</label
+                    ><input id="wpn1Ap" name="wpn1Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Salvo">Weapon 1 salvo</label
+                    ><input id="wpn1Salvo" name="wpn1Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Range">Weapon 1 range</label
+                    ><input id="wpn1Range" name="wpn1Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn1Traits">Weapon 1 traits</label
+                    ><input id="wpn1Traits" name="wpn1Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn2Name">Weapon 2 name</label
+                    ><input id="wpn2Name" name="wpn2Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Pool">Weapon 2 dice pool</label
+                    ><input id="wpn2Pool" name="wpn2Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Dmg">Weapon 2 damage</label
+                    ><input id="wpn2Dmg" name="wpn2Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Ed">Weapon 2 ED</label
+                    ><input id="wpn2Ed" name="wpn2Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Ap">Weapon 2 AP</label
+                    ><input id="wpn2Ap" name="wpn2Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Salvo">Weapon 2 salvo</label
+                    ><input id="wpn2Salvo" name="wpn2Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Range">Weapon 2 range</label
+                    ><input id="wpn2Range" name="wpn2Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn2Traits">Weapon 2 traits</label
+                    ><input id="wpn2Traits" name="wpn2Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn3Name">Weapon 3 name</label
+                    ><input id="wpn3Name" name="wpn3Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Pool">Weapon 3 dice pool</label
+                    ><input id="wpn3Pool" name="wpn3Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Dmg">Weapon 3 damage</label
+                    ><input id="wpn3Dmg" name="wpn3Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Ed">Weapon 3 ED</label
+                    ><input id="wpn3Ed" name="wpn3Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Ap">Weapon 3 AP</label
+                    ><input id="wpn3Ap" name="wpn3Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Salvo">Weapon 3 salvo</label
+                    ><input id="wpn3Salvo" name="wpn3Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Range">Weapon 3 range</label
+                    ><input id="wpn3Range" name="wpn3Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn3Traits">Weapon 3 traits</label
+                    ><input id="wpn3Traits" name="wpn3Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn4Name">Weapon 4 name</label
+                    ><input id="wpn4Name" name="wpn4Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Pool">Weapon 4 dice pool</label
+                    ><input id="wpn4Pool" name="wpn4Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Dmg">Weapon 4 damage</label
+                    ><input id="wpn4Dmg" name="wpn4Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Ed">Weapon 4 ED</label
+                    ><input id="wpn4Ed" name="wpn4Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Ap">Weapon 4 AP</label
+                    ><input id="wpn4Ap" name="wpn4Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Salvo">Weapon 4 salvo</label
+                    ><input id="wpn4Salvo" name="wpn4Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Range">Weapon 4 range</label
+                    ><input id="wpn4Range" name="wpn4Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn4Traits">Weapon 4 traits</label
+                    ><input id="wpn4Traits" name="wpn4Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn5Name">Weapon 5 name</label
+                    ><input id="wpn5Name" name="wpn5Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Pool">Weapon 5 dice pool</label
+                    ><input id="wpn5Pool" name="wpn5Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Dmg">Weapon 5 damage</label
+                    ><input id="wpn5Dmg" name="wpn5Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Ed">Weapon 5 ED</label
+                    ><input id="wpn5Ed" name="wpn5Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Ap">Weapon 5 AP</label
+                    ><input id="wpn5Ap" name="wpn5Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Salvo">Weapon 5 salvo</label
+                    ><input id="wpn5Salvo" name="wpn5Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Range">Weapon 5 range</label
+                    ><input id="wpn5Range" name="wpn5Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn5Traits">Weapon 5 traits</label
+                    ><input id="wpn5Traits" name="wpn5Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="wpn6Name">Weapon 6 name</label
+                    ><input id="wpn6Name" name="wpn6Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Pool">Weapon 6 dice pool</label
+                    ><input id="wpn6Pool" name="wpn6Pool" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Dmg">Weapon 6 damage</label
+                    ><input id="wpn6Dmg" name="wpn6Dmg" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Ed">Weapon 6 ED</label
+                    ><input id="wpn6Ed" name="wpn6Ed" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Ap">Weapon 6 AP</label
+                    ><input id="wpn6Ap" name="wpn6Ap" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Salvo">Weapon 6 salvo</label
+                    ><input id="wpn6Salvo" name="wpn6Salvo" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Range">Weapon 6 range</label
+                    ><input id="wpn6Range" name="wpn6Range" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="wpn6Traits">Weapon 6 traits</label
+                    ><input id="wpn6Traits" name="wpn6Traits" type="text" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="subhead">Armour</h3>
+          <div class="table-wrap">
+            <table class="sheet-table compact">
+              <thead>
+                <tr>
+                  <th scope="col">Armour</th>
+                  <th scope="col" class="num">AR</th>
+                  <th scope="col">Traits</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="arm1Name">Armour 1 name</label
+                    ><input id="arm1Name" name="arm1Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="arm1Ar">Armour 1 AR</label
+                    ><input
+                      id="arm1Ar"
+                      name="arm1Ar"
+                      class="num"
+                      type="number"
+                      inputmode="numeric"
+                      min="0" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="arm1Traits">Armour 1 traits</label
+                    ><input id="arm1Traits" name="arm1Traits" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="arm2Name">Armour 2 name</label
+                    ><input id="arm2Name" name="arm2Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="arm2Ar">Armour 2 AR</label
+                    ><input
+                      id="arm2Ar"
+                      name="arm2Ar"
+                      class="num"
+                      type="number"
+                      inputmode="numeric"
+                      min="0" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="arm2Traits">Armour 2 traits</label
+                    ><input id="arm2Traits" name="arm2Traits" type="text" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="top-gap">
+            <label for="gearNotes" class="subhead">Gear</label>
+            <textarea id="gearNotes" name="gearNotes" rows="4"></textarea>
+          </div>
+        </section>
+
+        <!-- POWERS + TALENTS -->
+        <section id="powers" class="card" aria-labelledby="powers-title">
+          <h2 id="powers-title">Psychic Powers, Talents &amp; Faith</h2>
+
+          <div class="grid-2">
+            <fieldset class="stack">
+              <legend>Psychic powers (quick list)</legend>
+              <p class="hint">Later: max powers = Tier + 1</p>
+
+              <div class="field">
+                <label for="psy1">1</label><input id="psy1" name="psy1" type="text" />
+              </div>
+              <div class="field">
+                <label for="psy2">2</label><input id="psy2" name="psy2" type="text" />
+              </div>
+              <div class="field">
+                <label for="psy3">3</label><input id="psy3" name="psy3" type="text" />
+              </div>
+              <div class="field">
+                <label for="psy4">4</label><input id="psy4" name="psy4" type="text" />
+              </div>
+              <div class="field">
+                <label for="psy5">5</label><input id="psy5" name="psy5" type="text" />
+              </div>
+              <div class="field">
+                <label for="psy6">6</label><input id="psy6" name="psy6" type="text" />
+              </div>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>Faith</legend>
+              <div class="field inline">
+                <label for="faithCurrent">Current</label>
+                <input
+                  id="faithCurrent"
+                  name="faithCurrent"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+              <div class="field inline">
+                <label for="faithMax">Max</label>
+                <input
+                  id="faithMax"
+                  name="faithMax"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+            </fieldset>
+          </div>
+
+          <h3 class="subhead top-gap">Power details</h3>
+          <div class="table-wrap">
+            <table class="sheet-table compact">
+              <thead>
+                <tr>
+                  <th scope="col">Power</th>
+                  <th scope="col" class="num">DN</th>
+                  <th scope="col">Activation</th>
+                  <th scope="col">Duration</th>
+                  <th scope="col">Range</th>
+                  <th scope="col">Target</th>
+                  <th scope="col">Effect</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 6 rows -->
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p1Name">Power 1 name</label
+                    ><input id="p1Name" name="p1Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Dn">Power 1 DN</label
+                    ><input id="p1Dn" name="p1Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Act">Power 1 activation</label
+                    ><input id="p1Act" name="p1Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Dur">Power 1 duration</label
+                    ><input id="p1Dur" name="p1Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Rng">Power 1 range</label
+                    ><input id="p1Rng" name="p1Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Tgt">Power 1 target</label
+                    ><input id="p1Tgt" name="p1Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p1Eff">Power 1 effect</label
+                    ><input id="p1Eff" name="p1Eff" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p2Name">Power 2 name</label
+                    ><input id="p2Name" name="p2Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Dn">Power 2 DN</label
+                    ><input id="p2Dn" name="p2Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Act">Power 2 activation</label
+                    ><input id="p2Act" name="p2Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Dur">Power 2 duration</label
+                    ><input id="p2Dur" name="p2Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Rng">Power 2 range</label
+                    ><input id="p2Rng" name="p2Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Tgt">Power 2 target</label
+                    ><input id="p2Tgt" name="p2Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p2Eff">Power 2 effect</label
+                    ><input id="p2Eff" name="p2Eff" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p3Name">Power 3 name</label
+                    ><input id="p3Name" name="p3Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Dn">Power 3 DN</label
+                    ><input id="p3Dn" name="p3Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Act">Power 3 activation</label
+                    ><input id="p3Act" name="p3Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Dur">Power 3 duration</label
+                    ><input id="p3Dur" name="p3Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Rng">Power 3 range</label
+                    ><input id="p3Rng" name="p3Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Tgt">Power 3 target</label
+                    ><input id="p3Tgt" name="p3Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p3Eff">Power 3 effect</label
+                    ><input id="p3Eff" name="p3Eff" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p4Name">Power 4 name</label
+                    ><input id="p4Name" name="p4Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Dn">Power 4 DN</label
+                    ><input id="p4Dn" name="p4Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Act">Power 4 activation</label
+                    ><input id="p4Act" name="p4Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Dur">Power 4 duration</label
+                    ><input id="p4Dur" name="p4Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Rng">Power 4 range</label
+                    ><input id="p4Rng" name="p4Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Tgt">Power 4 target</label
+                    ><input id="p4Tgt" name="p4Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p4Eff">Power 4 effect</label
+                    ><input id="p4Eff" name="p4Eff" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p5Name">Power 5 name</label
+                    ><input id="p5Name" name="p5Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Dn">Power 5 DN</label
+                    ><input id="p5Dn" name="p5Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Act">Power 5 activation</label
+                    ><input id="p5Act" name="p5Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Dur">Power 5 duration</label
+                    ><input id="p5Dur" name="p5Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Rng">Power 5 range</label
+                    ><input id="p5Rng" name="p5Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Tgt">Power 5 target</label
+                    ><input id="p5Tgt" name="p5Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p5Eff">Power 5 effect</label
+                    ><input id="p5Eff" name="p5Eff" type="text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="sr-only" for="p6Name">Power 6 name</label
+                    ><input id="p6Name" name="p6Name" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Dn">Power 6 DN</label
+                    ><input id="p6Dn" name="p6Dn" class="num" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Act">Power 6 activation</label
+                    ><input id="p6Act" name="p6Act" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Dur">Power 6 duration</label
+                    ><input id="p6Dur" name="p6Dur" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Rng">Power 6 range</label
+                    ><input id="p6Rng" name="p6Rng" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Tgt">Power 6 target</label
+                    ><input id="p6Tgt" name="p6Tgt" type="text" />
+                  </td>
+                  <td>
+                    <label class="sr-only" for="p6Eff">Power 6 effect</label
+                    ><input id="p6Eff" name="p6Eff" type="text" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="top-gap">
+            <label for="talents" class="subhead">Talents &amp; Abilities</label>
+            <textarea id="talents" name="talents" rows="5"></textarea>
+          </div>
+        </section>
+
+        <!-- INJURIES + CORRUPTION + XP + NOTES -->
+        <section id="injuries" class="card" aria-labelledby="injuries-title">
+          <h2 id="injuries-title">Injuries, Corruption, XP &amp; Notes</h2>
+
+          <div class="grid-2">
+            <fieldset class="stack">
+              <legend>Injuries &amp; Corruption</legend>
+
+              <div class="field inline">
+                <label for="corruptionPoints">Corruption points</label>
+                <input
+                  id="corruptionPoints"
+                  name="corruptionPoints"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <div class="field inline">
+                <label for="corruptionLevel">Corruption level</label>
+                <input
+                  id="corruptionLevel"
+                  name="corruptionLevel"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <div class="field">
+                <label for="memorableInjuries">Memorable injuries</label>
+                <textarea id="memorableInjuries" name="memorableInjuries" rows="2"></textarea>
+              </div>
+
+              <div class="field">
+                <label for="traumaticInjuries">Traumatic injuries</label>
+                <textarea id="traumaticInjuries" name="traumaticInjuries" rows="2"></textarea>
+              </div>
+
+              <div class="field">
+                <label for="mutations">Mutations</label>
+                <textarea id="mutations" name="mutations" rows="2"></textarea>
+              </div>
+            </fieldset>
+
+            <fieldset class="stack">
+              <legend>Experience (XP)</legend>
+
+              <div class="field inline">
+                <label for="xpEarned">XP earned (total)</label>
+                <input
+                  id="xpEarned"
+                  name="xpEarned"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <div class="field inline">
+                <label for="xpCurrent">Current XP (remaining)</label>
+                <input
+                  id="xpCurrent"
+                  name="xpCurrent"
+                  class="num"
+                  type="number"
+                  inputmode="numeric"
+                  min="0" />
+              </div>
+
+              <p class="hint">Rank is tracked in Identity.</p>
+            </fieldset>
+          </div>
+
+          <div class="top-gap">
+            <label for="notes" class="subhead">Notes</label>
+            <textarea id="notes" name="notes" rows="6"></textarea>
+            <p class="hint">
+              Later milestone: split “public notes” vs “private notes” so private notes never enter
+              the shareable URL fragment.
+            </p>
+          </div>
+        </section>
+      </form>
+
+      <footer class="sheet-footer print-only" aria-hidden="true">
+        <p>Printed from wg-sheetbuilder</p>
+      </footer>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <div class="container">
-        <small>© <span id="year"></span> wg-sheetbuilder</small>
+    <footer class="app-footer screen-only" role="contentinfo">
+      <div class="wrap">
+        <small class="muted">Tip: use your browser Print → Save as PDF.</small>
       </div>
     </footer>
   </body>

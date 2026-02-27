@@ -1,0 +1,194 @@
+/* structure, responsiveness, print scaffolding */
+
+:root {
+  --page-max: 1100px;
+  --gap: 12px;
+  --gap-lg: 16px;
+  --radius: 12px;
+  --line: 1px solid color-mix(in oklab, var(--color-text), transparent 80%);
+}
+
+.wrap {
+  width: min(100%, var(--page-max));
+  margin-inline: auto;
+  padding: 12px;
+}
+
+@media (min-width: 700px) {
+  .wrap {
+    padding: 16px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 8px;
+  padding: 8px 10px;
+  background: Canvas;
+  border: var(--line);
+  border-radius: 10px;
+}
+.skip-link:focus-visible {
+  left: 8px;
+  z-index: 999;
+}
+
+.screen-only {
+  display: block;
+}
+.print-only {
+  display: none;
+}
+
+.app-header {
+  border-bottom: var(--line);
+}
+
+.app-header .wrap {
+  display: grid;
+  gap: var(--gap);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .app-header .wrap {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sheet-title {
+  padding-block: 10px 6px;
+}
+
+.sheet {
+  display: grid;
+  gap: var(--gap-lg);
+}
+
+.card {
+  border: var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  break-inside: avoid;
+}
+
+@media (min-width: 900px) {
+  .card {
+    padding: 14px;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr;
+}
+
+.grid-2 {
+  display: grid;
+  gap: var(--gap-lg);
+  grid-template-columns: 1fr;
+}
+
+.grid-3 {
+  display: grid;
+  gap: var(--gap-lg);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid .span-2 {
+    grid-column: span 2;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.stack {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: var(--line);
+  border-radius: var(--radius);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius);
+}
+
+.sheet-table {
+  width: 100%;
+  min-width: 720px;
+}
+
+.sheet-table.compact {
+  min-width: 900px;
+}
+
+.top-gap {
+  margin-top: 14px;
+}
+
+/* Print scaffolding */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .wrap {
+    width: 100%;
+    padding: 0;
+  }
+
+  .card {
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  /* Keep key blocks together where possible */
+  .card,
+  fieldset,
+  table,
+  .stack {
+    break-inside: avoid;
+  }
+
+  /* Avoid wasting space with horizontal scrolling wrappers in print */
+  .table-wrap {
+    overflow: visible;
+  }
+}
