@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="./css/style.css" />
 
     <!-- JS intentionally minimal for this milestone -->
-    <script defer src="./js/main.js"></script>
+    <script defer type="module" src="./js/main.js"></script>
   </head>
 
   <body>
@@ -37,6 +37,38 @@
           </ul>
         </nav>
       </div>
+      <section class="card screen-only" aria-labelledby="manager-title">
+        <h2 id="manager-title">Character Manager</h2>
+
+        <div class="manager-row">
+          <div class="field">
+            <label for="characterSelect">Saved characters</label>
+            <select id="characterSelect" name="characterSelect">
+              <option value="">Select a character…</option>
+            </select>
+          </div>
+
+          <div class="manager-actions">
+            <button type="button" id="btnNewCharacter">New</button>
+            <button type="button" id="btnDeleteCharacter">Delete</button>
+
+            <span class="manager-split" aria-hidden="true"></span>
+
+            <button type="button" id="btnExportCurrent">Export current</button>
+            <button type="button" id="btnExportAll">Export all</button>
+
+            <button type="button" id="btnImport">Import</button>
+            <input
+              id="importFile"
+              type="file"
+              accept="application/json"
+              class="sr-only"
+              aria-label="Import JSON file" />
+
+            <p id="saveStatus" class="muted" aria-live="polite">—</p>
+          </div>
+        </div>
+      </section>
     </header>
 
     <main id="sheet" class="wrap" role="main">
@@ -782,15 +814,8 @@
               </div>
               <div class="field inline">
                 <label for="woundsMax">Max</label>
-                <input
-                  id="woundsMax"
-                  name="woundsMax"
-                  class="num"
-                  type="number"
-                  inputmode="numeric"
-                  min="0" />
+                <output id="woundsMax" name="woundsMax" class="num" aria-label="Wounds max" />
               </div>
-              <p class="hint">Later calc: T + (2 × Tier)</p>
             </fieldset>
 
             <fieldset class="stack">
@@ -807,15 +832,8 @@
               </div>
               <div class="field inline">
                 <label for="shockMax">Max</label>
-                <input
-                  id="shockMax"
-                  name="shockMax"
-                  class="num"
-                  type="number"
-                  inputmode="numeric"
-                  min="0" />
+                <output id="shockMax" name="shockMax" class="num" aria-label="Shock max" />
               </div>
-              <p class="hint">Later calc: Wil + Tier</p>
             </fieldset>
 
             <fieldset class="stack">
@@ -850,15 +868,13 @@
 
               <div class="field inline">
                 <label for="defence">Defence</label>
-                <input id="defence" name="defence" class="num" type="number" inputmode="numeric" />
+                <output id="defence" name="defence" class="num" aria-label="Defence" />
               </div>
-              <p class="hint">Later calc: Initiative − 1</p>
 
               <div class="field inline">
                 <label for="resBase">Resilience (base)</label>
-                <input id="resBase" name="resBase" class="num" type="number" inputmode="numeric" />
+                <output id="resBase" name="resBase" class="num" aria-label="Resilience base" />
               </div>
-              <p class="hint">Later calc: Toughness + 1</p>
 
               <div class="field inline">
                 <label for="armourAR">Armour bonus (AR)</label>
@@ -873,14 +889,8 @@
 
               <div class="field inline">
                 <label for="resTotal">Resilience (total)</label>
-                <input
-                  id="resTotal"
-                  name="resTotal"
-                  class="num"
-                  type="number"
-                  inputmode="numeric" />
+                <output id="resTotal" name="resTotal" class="num" aria-label="Resilience total" />
               </div>
-              <p class="hint">Later calc: base + AR</p>
             </fieldset>
 
             <fieldset class="stack">
@@ -888,20 +898,17 @@
 
               <div class="field inline">
                 <label for="conviction">Conviction</label>
-                <input
+                <output
                   id="conviction"
                   name="conviction"
                   class="num"
-                  type="number"
-                  inputmode="numeric" />
+                  aria-label="Conviction total" />
               </div>
-              <p class="hint">Later calc: Wil</p>
 
               <div class="field inline">
                 <label for="resolve">Resolve</label>
-                <input id="resolve" name="resolve" class="num" type="number" inputmode="numeric" />
+                <output id="resolve" name="resolve" class="num" aria-label="Resolve" />
               </div>
-              <p class="hint">Later calc: Wil − 1</p>
 
               <div class="field inline">
                 <label for="determination">Determination</label>
@@ -909,10 +916,8 @@
                   id="determination"
                   name="determination"
                   class="num"
-                  type="number"
-                  inputmode="numeric" />
+                  aria-label="Determination total" />
               </div>
-              <p class="hint">Later calc: Toughness</p>
             </fieldset>
 
             <fieldset class="stack">
@@ -920,20 +925,13 @@
 
               <div class="field inline">
                 <label for="influence">Influence</label>
-                <input
-                  id="influence"
-                  name="influence"
-                  class="num"
-                  type="number"
-                  inputmode="numeric" />
+                <input id="influence" name="influence" class="num" aria-label="Influence" />
               </div>
-              <p class="hint">Later calc: Fel − 1</p>
 
               <div class="field inline">
                 <label for="wealth">Wealth</label>
-                <input id="wealth" name="wealth" class="num" type="number" inputmode="numeric" />
+                <input id="wealth" name="wealth" class="num" aria-label="Wealth" />
               </div>
-              <p class="hint">Later calc: Tier</p>
 
               <div class="field inline">
                 <label for="speed">Speed</label>
@@ -968,9 +966,7 @@
                   id="passiveAwareness"
                   name="passiveAwareness"
                   class="num"
-                  type="number"
-                  inputmode="numeric" />
-                <p class="hint">Later calc: Awareness total ÷ 2</p>
+                  aria-label="Passive Awareness" />
               </div>
             </fieldset>
           </div>

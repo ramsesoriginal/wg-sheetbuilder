@@ -192,3 +192,43 @@
     overflow: visible;
   }
 }
+
+.manager-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.manager-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 800px) {
+  .manager-row {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+}
+
+.manager-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.manager-split {
+  width: 1px;
+  height: 28px;
+  background: color-mix(in oklab, var(--color-text), transparent 75%);
+  margin-inline: 2px;
+}
+
+@media (max-width: 799px) {
+  .manager-split {
+    display: none;
+  }
+}
