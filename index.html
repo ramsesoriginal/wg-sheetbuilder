@@ -72,52 +72,45 @@
     </header>
 
     <main id="sheet" class="wrap" role="main">
-      <header class="sheet-title">
-        <h1>Character Sheet</h1>
-        <p class="muted">
-          Field-complete and print-friendly. Calculations, storage, and sharing come in later
-          milestones.
-        </p>
-      </header>
-
       <form class="sheet" action="#" method="post">
-        <!-- IDENTITY -->
-        <section id="identity" class="card" aria-labelledby="identity-title">
-          <h2 id="identity-title">Identity</h2>
+        <!-- SHEET HEADER / IDENTITY -->
+        <header id="identity" class="card sheet-head" aria-labelledby="identity-title">
+          <h2 id="identity-title" class="sr-only">Identity</h2>
 
-          <fieldset class="grid" aria-describedby="identity-help">
+          <fieldset class="grid identity-grid" aria-describedby="identity-help">
             <legend class="sr-only">Character identity</legend>
 
-            <p id="identity-help" class="sr-only">
-              Enter character and campaign identity fields. All fields are printable.
-            </p>
-
-            <div class="field">
+            <!-- BIG NAMEPLATE -->
+            <div class="field identity-name">
               <label for="characterName">Character name</label>
               <input id="characterName" name="characterName" type="text" autocomplete="off" />
             </div>
 
-            <div class="field">
-              <label for="playerName">Player name</label>
-              <input id="playerName" name="playerName" type="text" autocomplete="name" />
+            <!-- RIGHT STACK next to name: Species, Faction, Archetype -->
+            <div class="identity-meta">
+              <div class="field">
+                <label for="species">Species</label>
+                <input id="species" name="species" type="text" autocomplete="off" />
+              </div>
+
+              <div class="field">
+                <label for="faction">Faction</label>
+                <input id="faction" name="faction" type="text" autocomplete="off" />
+              </div>
+
+              <div class="field">
+                <label for="archetype">Archetype</label>
+                <input id="archetype" name="archetype" type="text" autocomplete="off" />
+              </div>
             </div>
 
-            <div class="field">
-              <label for="archetype">Archetype</label>
-              <input id="archetype" name="archetype" type="text" autocomplete="off" />
+            <!-- BAND below name: Background + Keywords -->
+            <div class="field background">
+              <label for="background">Background</label>
+              <input id="background" name="background" type="text" autocomplete="off" />
             </div>
 
-            <div class="field">
-              <label for="species">Species</label>
-              <input id="species" name="species" type="text" autocomplete="off" />
-            </div>
-
-            <div class="field">
-              <label for="faction">Faction</label>
-              <input id="faction" name="faction" type="text" autocomplete="off" />
-            </div>
-
-            <div class="field">
+            <div class="field keywords">
               <label for="keywords">Keywords</label>
               <input
                 id="keywords"
@@ -127,26 +120,44 @@
                 placeholder="Comma-separated" />
             </div>
 
-            <div class="field">
-              <label for="background">Background</label>
-              <input id="background" name="background" type="text" autocomplete="off" />
-            </div>
+            <!-- OBJECTIVE (2 rows), with Tier/Rank inline on row 1, Player Name below -->
 
-            <div class="field">
-              <label for="tier">Tier</label>
-              <input id="tier" name="tier" type="number" inputmode="numeric" min="0" />
-            </div>
-
-            <div class="field">
-              <label for="rank">Rank</label>
-              <input id="rank" name="rank" type="number" inputmode="numeric" min="0" />
-            </div>
-
-            <div class="field span-2">
+            <div class="field objective">
               <label for="objective">Objective</label>
               <textarea id="objective" name="objective" rows="2"></textarea>
             </div>
+
+            <div class="meta-info">
+              <div class="field tier-rank">
+                <div class="tier-rank__pair">
+                  <label for="tier">Tier</label>
+                  <input id="tier" name="tier" type="number" inputmode="numeric" min="0" />
+                </div>
+                <div class="tier-rank__pair">
+                  <label for="rank">Rank</label>
+                  <input id="rank" name="rank" type="number" inputmode="numeric" min="0" />
+                </div>
+              </div>
+
+              <div class="field identity-player">
+                <label for="playerName">Player name</label>
+                <input id="playerName" name="playerName" type="text" autocomplete="name" />
+              </div>
+            </div>
           </fieldset>
+
+          <!-- face portrait slot -->
+          <div class="portrait-face" aria-label="Face portrait">
+            <div class="portrait-face__frame"></div>
+          </div>
+        </header>
+
+        <section id="portrait" class="card" aria-labelledby="portrait-title">
+          <h2 id="portrait-title">Portrait</h2>
+        </section>
+
+        <section id="bio" class="card" aria-labelledby="bio-title">
+          <h2 id="bio-title">Bio</h2>
         </section>
 
         <!-- ATTRIBUTES -->
@@ -796,7 +807,7 @@
         </section>
 
         <!-- SURVIVAL + RESOURCES -->
-        <section class="card" aria-labelledby="survival-title">
+        <section class="card" id="resources" aria-labelledby="survival-title">
           <h2 id="survival-title">Survival &amp; Resources</h2>
 
           <div class="grid-3">

@@ -1,17 +1,24 @@
-/* structure, responsiveness, print scaffolding */
+/* layout.css — STRUCTURE ONLY
+   No colors, borders, shadows, radii, typography.
+   Goal: a composed character-sheet page (portrait + top banner + central ring + side blocks)
+*/
 
 :root {
-  --page-max: 1100px;
-  --gap: 12px;
-  --gap-lg: 16px;
-  --radius: 12px;
-  --line: 1px solid color-mix(in oklab, var(--color-text), transparent 80%);
-}
+  --page-max: 1240px;
+  --pad: clamp(12px, 2vw, 20px);
 
-.wrap {
-  width: min(100%, var(--page-max));
-  margin-inline: auto;
-  padding: 12px;
+  --gap-1: 6px;
+  --gap-2: 10px;
+  --gap-3: 14px;
+  --gap-4: 18px;
+  --gap-5: 26px;
+
+  /* Central ring sizing (layout only) */
+  --ring-min: 320px;
+  --ring-ideal: 44vw;
+  --ring-max: 520px;
+
+  --tap-min: 44px;
 }
 
 @media (min-width: 700px) {
@@ -37,6 +44,20 @@
 .screen-only {
   display: block;
 }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .print-only {
   display: none;
 }
@@ -66,169 +87,391 @@
   list-style: none;
 }
 
-.sheet-title {
-  padding-block: 10px 6px;
-}
-
-.sheet {
-  display: grid;
-  gap: var(--gap-lg);
-}
-
+/* Generic “panel container” spacing (visual styling lives in style.css) */
 .card {
-  border: var(--line);
-  border-radius: var(--radius);
-  padding: 12px;
+  padding: var(--gap-3);
   break-inside: avoid;
 }
 
 @media (min-width: 900px) {
   .card {
-    padding: 14px;
+    padding: var(--gap-4);
   }
 }
 
-.grid {
+/* ---------------------------
+   Mobile-first: stacked flow
+   --------------------------- */
+
+.sheet {
   display: grid;
-  gap: var(--gap);
   grid-template-columns: 1fr;
+  gap: var(--gap-4);
+
+  /* Order = usable on phone */
+  grid-template-areas:
+    "identity"
+    "resources"
+    "attributes"
+    "skills"
+    "wargear"
+    "powers"
+    "injuries"
+    "portrait"
+    "bio";
 }
 
-.grid-2 {
-  display: grid;
-  gap: var(--gap-lg);
-  grid-template-columns: 1fr;
+/* Map IDs to areas */
+#identity {
+  grid-area: identity;
+}
+#portrait {
+  grid-area: portrait;
+}
+#bio {
+  grid-area: bio;
+}
+#attributes {
+  grid-area: attributes;
+}
+#resources {
+  grid-area: resources;
+}
+#powers {
+  grid-area: powers;
+}
+#gear {
+  grid-area: wargear;
+}
+#skills {
+  grid-area: skills;
+}
+#injuries {
+  grid-area: injuries;
 }
 
-.grid-3 {
-  display: grid;
-  gap: var(--gap-lg);
-  grid-template-columns: 1fr;
-}
+/* ---------------------------
+   Desktop composition grid
+   --------------------------- */
+/* This is the “pizzazz” structure: not 2 columns.
+   It’s a 3-rail page with a central anchor (ring) and interlocking blocks.
+*/
+@media (min-width: 1040px) {
+  .sheet {
+    /* 3 rails: left (portrait/powers/wargear), center (bio/ring/skills), right (resources/injuries) */
+    grid-template-columns:
+      minmax(260px, 0.95fr)
+      minmax(460px, 1.35fr)
+      minmax(280px, 1fr);
 
-@media (min-width: 800px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--gap-5);
+    row-gap: var(--gap-5);
+
+    align-items: start;
+
+    /* Layout map (matches your description)
+       Row 1: IDENTITY spans all
+       Row 2: Portrait | Bio | Resources
+       Row 3: Powers   | Ring | Resources (resources gets extra height)
+       Row 4: Powers   | Skills (wide) | Skills (wide)
+       Row 5: Wargear  | Skills (wide) | Skills (wide)
+       Row 6: Wargear  | .            | Injuries+Notes
+    */
+    grid-template-areas:
+      "identity   identity   identity"
+      "portrait   bio        resources"
+      "powers     bio        resources"
+      "powers     attributes resources"
+      "powers     skills     resources"
+      "wargear    skills     resources"
+      "wargear    skills     injuries"
+      "wargear    skills     injuries";
   }
-  .grid .span-2 {
-    grid-column: span 2;
-  }
 
-  .grid-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Give the composition a bit of “designed” stagger without adding aesthetics */
+  #portrait {
+    align-self: start;
   }
-
-  .grid-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  #bio {
+    align-self: start;
+  }
+  #resources {
+    align-self: start;
+  }
+  #powers {
+    align-self: start;
+  }
+  #wargear {
+    align-self: stretch;
+  }
+  #injuries {
+    align-self: stretch;
   }
 }
 
-.stack {
-  display: grid;
-  gap: 10px;
-  padding: 10px;
-  border: var(--line);
-  border-radius: var(--radius);
+/* Ultra-wide: more breathing room */
+@media (min-width: 1320px) {
+  :root {
+    --page-max: 1320px;
+  }
 }
 
+/* ---------------------------
+   Central ring behavior
+   --------------------------- */
+/* The attributes section should behave like a centerpiece. */
+#attributes {
+  justify-self: center;
+  align-self: start;
+
+  /* This sets an intentional “medallion” footprint even before we draw the wheel */
+  width: clamp(var(--ring-min), var(--ring-ideal), var(--ring-max));
+}
+
+/* If you put an SVG/canvas inside, make it fill the ring container */
+#attributes svg,
+#attributes canvas,
+#attributes .ring {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Skills under the ring: give it a stable readable width */
+#skills {
+  min-width: 0;
+}
+
+/* Tables: scroll on screen, but never in print */
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius);
 }
-
 .sheet-table {
   width: 100%;
   min-width: 720px;
 }
 
-.sheet-table.compact {
-  min-width: 900px;
-}
-
-.top-gap {
-  margin-top: 14px;
-}
-
-/* Print scaffolding */
+/* ---------------------------
+   Print: revert to document flow
+   --------------------------- */
 @media print {
-  :root {
-    color-scheme: light;
-  }
-
-  .screen-only {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-
-  body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-
   .wrap {
     width: 100%;
     padding: 0;
   }
 
+  /* Print should prioritize pagination stability */
+  .sheet {
+    display: block;
+  }
+
   .card {
-    border: 1px solid #000;
-    border-radius: 0;
     padding: 10px;
   }
 
-  /* Keep key blocks together where possible */
   .card,
   fieldset,
-  table,
-  .stack {
+  table {
     break-inside: avoid;
   }
 
-  /* Avoid wasting space with horizontal scrolling wrappers in print */
   .table-wrap {
     overflow: visible;
   }
 }
 
-.manager-row {
+/* ---------- Identity header mosaic (matches current markup) ---------- */
+
+.sheet-head {
   display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr;
+  gap: var(--gap-3);
+  align-items: start;
 }
 
-.manager-actions {
-  display: flex;
-  gap: 12px;
+/* Portrait (DOM-last, desktop-right) */
+.portrait-face {
+  justify-self: start;
+  width: 100%;
+  max-width: 220px;
+}
+.portrait-face__frame {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+
+/* identity grid container */
+.identity-grid {
+  display: grid;
+  gap: var(--gap-3);
+  grid-template-columns: 1fr; /* mobile default */
+}
+
+/* Field: structure only */
+.identity-grid .field {
+  display: grid;
+  gap: var(--gap-1);
+  min-height: var(--tap-min);
+  position: relative; /* anchor for absolute label */
+}
+
+/* FLOATING LABELS (intentionally overlap neighbors)
+   - hidden by default
+   - appear on hover/focus-within
+   - positioned above the input, spilling outside the field box
+*/
+.identity-grid .field label {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(-120%); /* pushes label outside, overlapping other fields */
+  pointer-events: none;
+
+  /* IMPORTANT: allow overlap */
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.identity-grid .field:focus-within label,
+.identity-grid .field:hover label {
+  opacity: 1;
+}
+
+/* If something *must* appear above labels, raise it explicitly (rare) */
+.identity-grid .field:focus-within {
+  z-index: 30; /* focused field floats above other fields */
+}
+
+/* Keep Tier/Rank labels always visible + inline */
+.tier-rank label {
+  opacity: 1 !important;
+  position: static !important;
+  transform: none !important;
+  pointer-events: auto !important;
+  white-space: normal !important;
+  z-index: auto !important;
+}
+
+/* Character name: 3 rows tall */
+#characterName {
+  min-block-size: calc(var(--tap-min) * 3 + var(--gap-3) * 2);
+  height: calc(var(--tap-min) * 3 + var(--gap-3) * 2);
+}
+
+/* Objective: 2 rows tall */
+#objective {
+  min-block-size: calc(var(--tap-min) * 2 + var(--gap-3));
+  height: calc(var(--tap-min) * 2 + var(--gap-3));
+}
+
+/* Tier/Rank inline pairs */
+.tier-rank {
+  display: grid;
+  gap: var(--gap-2);
+  grid-template-columns: 1fr 1fr;
+}
+.tier-rank__pair {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  flex-wrap: wrap;
+  gap: var(--gap-2);
+}
+.tier-rank__pair input {
+  min-width: 5em;
 }
 
-@media (min-width: 800px) {
-  .manager-row {
-    grid-template-columns: 1fr auto;
-    align-items: end;
+/* meta-info container (tier/rank + player name) */
+.meta-info {
+  display: grid;
+  gap: var(--gap-3);
+}
+
+/* ---------------- Desktop: portrait rail + 12-col mosaic ---------------- */
+
+@media (min-width: 980px) {
+  .sheet-head {
+    grid-template-columns: 1fr 220px;
+    column-gap: var(--gap-5);
+    align-items: start;
+  }
+
+  .identity-grid {
+    grid-column: 1;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .portrait-face {
+    grid-column: 2;
+    justify-self: end;
+    align-self: start;
+    position: relative;
+    top: var(--gap-2);
+  }
+
+  /* placement map (your desired structure) */
+
+  /* Row 1: big name + right stack */
+  .identity-name {
+    grid-column: 1 / 9;
+    grid-row: 1;
+  }
+
+  .identity-meta {
+    grid-column: 9 / 13;
+    grid-row: 1;
+    display: grid;
+    gap: var(--gap-3);
+  }
+
+  /* Row 2: background + keywords band */
+  .background {
+    grid-column: 1 / 8;
+    grid-row: 2;
+  }
+
+  .keywords {
+    grid-column: 8 / 13;
+    grid-row: 2;
+  }
+
+  /* Row 3: objective + tier/rank + player below */
+  .objective {
+    grid-column: 1 / 8;
+    grid-row: 3;
+  }
+
+  .meta-info {
+    grid-column: 8 / 13;
+    grid-row: 3;
+    align-content: start;
   }
 }
 
-.manager-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+/* ---------------- Print ---------------- */
 
-.manager-split {
-  width: 1px;
-  height: 28px;
-  background: color-mix(in oklab, var(--color-text), transparent 75%);
-  margin-inline: 2px;
-}
+@media print {
+  .sheet-head {
+    display: block;
+  }
 
-@media (max-width: 799px) {
-  .manager-split {
-    display: none;
+  /* In print, force labels visible AND non-overlapping (paper needs clarity) */
+  .identity-grid .field label {
+    opacity: 1;
+    position: static;
+    transform: none;
+    pointer-events: auto;
+    white-space: normal;
+    z-index: auto;
+  }
+
+  .identity-grid .field:focus-within {
+    z-index: auto;
+  }
+
+  #characterName,
+  #objective {
+    min-block-size: auto;
   }
 }
