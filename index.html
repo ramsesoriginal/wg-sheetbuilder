@@ -148,16 +148,20 @@
 
           <!-- face portrait slot -->
           <div class="portrait-face" aria-label="Face portrait">
-            <div class="portrait-face__frame"></div>
+            <figure class="portrait-face__frame picture__frame">
+              <img src="https://placebeard.it/300x400" alt="temporary picture" />
+            </figure>
           </div>
         </header>
 
         <section id="portrait" class="card" aria-labelledby="portrait-title">
-          <h2 id="portrait-title">Portrait</h2>
+          <figure class="portrait__frame picture__frame">
+            <img id="picture-text" src="https://placebeard.it/600x800" alt="temporary picture" />
+          </figure>
         </section>
 
         <section id="bio" class="card" aria-labelledby="bio-title">
-          <h2 id="bio-title">Bio</h2>
+          <textarea id="bio-text"> </textarea>
         </section>
 
         <!-- ATTRIBUTES -->
@@ -179,8 +183,10 @@
               </thead>
               <tbody>
                 <!-- Helper: keep IDs stable for future JS -->
-                <tr>
-                  <th scope="row">Strength (S)</th>
+                <tr class="attr attr-s">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Strength</span> <span class="attr-abbr">S</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrSRating">Strength rating</label
                     ><input
@@ -201,8 +207,10 @@
                   </td>
                   <td><output id="attrSTotal" class="num" aria-label="Strength total"></output></td>
                 </tr>
-                <tr>
-                  <th scope="row">Toughness (T)</th>
+                <tr class="attr attr-t">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Toughness</span> <span class="attr-abbr">T</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrTRating">Toughness rating</label
                     ><input
@@ -225,8 +233,10 @@
                     <output id="attrTTotal" class="num" aria-label="Toughness total"></output>
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row">Agility (A)</th>
+                <tr class="attr attr-a">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Agility</span> <span class="attr-abbr">A</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrARating">Agility rating</label
                     ><input
@@ -247,8 +257,10 @@
                   </td>
                   <td><output id="attrATotal" class="num" aria-label="Agility total"></output></td>
                 </tr>
-                <tr>
-                  <th scope="row">Initiative (I)</th>
+                <tr class="attr attr-i">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Initiative</span> <span class="attr-abbr">I</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrIRating">Initiative rating</label
                     ><input
@@ -271,8 +283,10 @@
                     <output id="attrITotal" class="num" aria-label="Initiative total"></output>
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row">Willpower (Wil)</th>
+                <tr class="attr attr-wil">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Willpower</span> <span class="attr-abbr">Wil</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrWilRating">Willpower rating</label
                     ><input
@@ -295,8 +309,10 @@
                     <output id="attrWilTotal" class="num" aria-label="Willpower total"></output>
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row">Intellect (Int)</th>
+                <tr class="attr attr-int">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Intellect</span> <span class="attr-abbr">Int</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrIntRating">Intellect rating</label
                     ><input
@@ -319,8 +335,10 @@
                     <output id="attrIntTotal" class="num" aria-label="Intellect total"></output>
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row">Fellowship (Fel)</th>
+                <tr class="attr attr-fel">
+                  <th scope="row" class="attr-label">
+                    <span class="attr-name">Fellowship</span> <span class="attr-abbr">Fel</span>
+                  </th>
                   <td>
                     <label class="sr-only" for="attrFelRating">Fellowship rating</label
                     ><input
@@ -869,7 +887,6 @@
                   inputmode="numeric"
                   min="0" />
               </div>
-              <p class="hint">Max varies by table/framework; allow override.</p>
             </fieldset>
           </div>
 
@@ -1037,176 +1054,6 @@
                   <td>
                     <label class="sr-only" for="wpn1Traits">Weapon 1 traits</label
                     ><input id="wpn1Traits" name="wpn1Traits" type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label class="sr-only" for="wpn2Name">Weapon 2 name</label
-                    ><input id="wpn2Name" name="wpn2Name" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Pool">Weapon 2 dice pool</label
-                    ><input id="wpn2Pool" name="wpn2Pool" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Dmg">Weapon 2 damage</label
-                    ><input id="wpn2Dmg" name="wpn2Dmg" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Ed">Weapon 2 ED</label
-                    ><input id="wpn2Ed" name="wpn2Ed" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Ap">Weapon 2 AP</label
-                    ><input id="wpn2Ap" name="wpn2Ap" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Salvo">Weapon 2 salvo</label
-                    ><input id="wpn2Salvo" name="wpn2Salvo" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Range">Weapon 2 range</label
-                    ><input id="wpn2Range" name="wpn2Range" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn2Traits">Weapon 2 traits</label
-                    ><input id="wpn2Traits" name="wpn2Traits" type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label class="sr-only" for="wpn3Name">Weapon 3 name</label
-                    ><input id="wpn3Name" name="wpn3Name" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Pool">Weapon 3 dice pool</label
-                    ><input id="wpn3Pool" name="wpn3Pool" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Dmg">Weapon 3 damage</label
-                    ><input id="wpn3Dmg" name="wpn3Dmg" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Ed">Weapon 3 ED</label
-                    ><input id="wpn3Ed" name="wpn3Ed" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Ap">Weapon 3 AP</label
-                    ><input id="wpn3Ap" name="wpn3Ap" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Salvo">Weapon 3 salvo</label
-                    ><input id="wpn3Salvo" name="wpn3Salvo" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Range">Weapon 3 range</label
-                    ><input id="wpn3Range" name="wpn3Range" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn3Traits">Weapon 3 traits</label
-                    ><input id="wpn3Traits" name="wpn3Traits" type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label class="sr-only" for="wpn4Name">Weapon 4 name</label
-                    ><input id="wpn4Name" name="wpn4Name" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Pool">Weapon 4 dice pool</label
-                    ><input id="wpn4Pool" name="wpn4Pool" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Dmg">Weapon 4 damage</label
-                    ><input id="wpn4Dmg" name="wpn4Dmg" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Ed">Weapon 4 ED</label
-                    ><input id="wpn4Ed" name="wpn4Ed" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Ap">Weapon 4 AP</label
-                    ><input id="wpn4Ap" name="wpn4Ap" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Salvo">Weapon 4 salvo</label
-                    ><input id="wpn4Salvo" name="wpn4Salvo" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Range">Weapon 4 range</label
-                    ><input id="wpn4Range" name="wpn4Range" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn4Traits">Weapon 4 traits</label
-                    ><input id="wpn4Traits" name="wpn4Traits" type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label class="sr-only" for="wpn5Name">Weapon 5 name</label
-                    ><input id="wpn5Name" name="wpn5Name" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Pool">Weapon 5 dice pool</label
-                    ><input id="wpn5Pool" name="wpn5Pool" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Dmg">Weapon 5 damage</label
-                    ><input id="wpn5Dmg" name="wpn5Dmg" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Ed">Weapon 5 ED</label
-                    ><input id="wpn5Ed" name="wpn5Ed" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Ap">Weapon 5 AP</label
-                    ><input id="wpn5Ap" name="wpn5Ap" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Salvo">Weapon 5 salvo</label
-                    ><input id="wpn5Salvo" name="wpn5Salvo" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Range">Weapon 5 range</label
-                    ><input id="wpn5Range" name="wpn5Range" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn5Traits">Weapon 5 traits</label
-                    ><input id="wpn5Traits" name="wpn5Traits" type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label class="sr-only" for="wpn6Name">Weapon 6 name</label
-                    ><input id="wpn6Name" name="wpn6Name" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Pool">Weapon 6 dice pool</label
-                    ><input id="wpn6Pool" name="wpn6Pool" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Dmg">Weapon 6 damage</label
-                    ><input id="wpn6Dmg" name="wpn6Dmg" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Ed">Weapon 6 ED</label
-                    ><input id="wpn6Ed" name="wpn6Ed" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Ap">Weapon 6 AP</label
-                    ><input id="wpn6Ap" name="wpn6Ap" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Salvo">Weapon 6 salvo</label
-                    ><input id="wpn6Salvo" name="wpn6Salvo" class="num" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Range">Weapon 6 range</label
-                    ><input id="wpn6Range" name="wpn6Range" type="text" />
-                  </td>
-                  <td>
-                    <label class="sr-only" for="wpn6Traits">Weapon 6 traits</label
-                    ><input id="wpn6Traits" name="wpn6Traits" type="text" />
                   </td>
                 </tr>
               </tbody>
@@ -1538,49 +1385,57 @@
         <section id="injuries" class="card" aria-labelledby="injuries-title">
           <h2 id="injuries-title">Injuries, Corruption, XP &amp; Notes</h2>
 
-          <div class="grid-2">
-            <fieldset class="stack">
+          <div class="injuries-layout">
+            <!-- INJURIES + CORRUPTION -->
+            <fieldset class="stack injuries-panel">
               <legend>Injuries &amp; Corruption</legend>
 
-              <div class="field inline">
-                <label for="corruptionPoints">Corruption points</label>
-                <input
-                  id="corruptionPoints"
-                  name="corruptionPoints"
-                  class="num"
-                  type="number"
-                  inputmode="numeric"
-                  min="0" />
+              <!-- Corruption stamp strip -->
+              <div class="corruption-stamp" role="group" aria-label="Corruption summary">
+                <div class="field inline">
+                  <label for="corruptionPoints">Corruption points</label>
+                  <input
+                    id="corruptionPoints"
+                    name="corruptionPoints"
+                    class="num"
+                    type="number"
+                    inputmode="numeric"
+                    min="0" />
+                </div>
+
+                <div class="field inline">
+                  <label for="corruptionLevel">Corruption level</label>
+                  <input
+                    id="corruptionLevel"
+                    name="corruptionLevel"
+                    class="num"
+                    type="number"
+                    inputmode="numeric"
+                    min="0" />
+                </div>
               </div>
 
-              <div class="field inline">
-                <label for="corruptionLevel">Corruption level</label>
-                <input
-                  id="corruptionLevel"
-                  name="corruptionLevel"
-                  class="num"
-                  type="number"
-                  inputmode="numeric"
-                  min="0" />
-              </div>
+              <!-- stepped writing wells -->
+              <div class="injury-wells">
+                <div class="field injury-well injury-well--memorable">
+                  <label for="memorableInjuries">Memorable injuries</label>
+                  <textarea id="memorableInjuries" name="memorableInjuries" rows="2"></textarea>
+                </div>
 
-              <div class="field">
-                <label for="memorableInjuries">Memorable injuries</label>
-                <textarea id="memorableInjuries" name="memorableInjuries" rows="2"></textarea>
-              </div>
+                <div class="field injury-well injury-well--traumatic">
+                  <label for="traumaticInjuries">Traumatic injuries</label>
+                  <textarea id="traumaticInjuries" name="traumaticInjuries" rows="2"></textarea>
+                </div>
 
-              <div class="field">
-                <label for="traumaticInjuries">Traumatic injuries</label>
-                <textarea id="traumaticInjuries" name="traumaticInjuries" rows="2"></textarea>
-              </div>
-
-              <div class="field">
-                <label for="mutations">Mutations</label>
-                <textarea id="mutations" name="mutations" rows="2"></textarea>
+                <div class="field injury-well injury-well--mutations">
+                  <label for="mutations">Mutations</label>
+                  <textarea id="mutations" name="mutations" rows="2"></textarea>
+                </div>
               </div>
             </fieldset>
 
-            <fieldset class="stack">
+            <!-- XP inset module -->
+            <fieldset class="stack xp-panel">
               <legend>Experience (XP)</legend>
 
               <div class="field inline">
@@ -1604,18 +1459,13 @@
                   inputmode="numeric"
                   min="0" />
               </div>
-
-              <p class="hint">Rank is tracked in Identity.</p>
             </fieldset>
-          </div>
 
-          <div class="top-gap">
-            <label for="notes" class="subhead">Notes</label>
-            <textarea id="notes" name="notes" rows="6"></textarea>
-            <p class="hint">
-              Later milestone: split “public notes” vs “private notes” so private notes never enter
-              the shareable URL fragment.
-            </p>
+            <!-- Notes anchor -->
+            <div class="notes-panel top-gap">
+              <label for="notes" class="subhead">Notes</label>
+              <textarea id="notes" name="notes" rows="6"></textarea>
+            </div>
           </div>
         </section>
       </form>

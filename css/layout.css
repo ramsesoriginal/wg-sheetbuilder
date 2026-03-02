@@ -72,7 +72,7 @@
   align-items: center;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 800px) {
   .app-header .wrap {
     grid-template-columns: 1fr auto;
   }
@@ -93,7 +93,7 @@
   break-inside: avoid;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 800px) {
   .card {
     padding: var(--gap-4);
   }
@@ -156,7 +156,7 @@
 /* This is the “pizzazz” structure: not 2 columns.
    It’s a 3-rail page with a central anchor (ring) and interlocking blocks.
 */
-@media (min-width: 1040px) {
+@media (min-width: 800px) {
   .sheet {
     /* 3 rails: left (portrait/powers/wargear), center (bio/ring/skills), right (resources/injuries) */
     grid-template-columns:
@@ -178,14 +178,12 @@
        Row 6: Wargear  | .            | Injuries+Notes
     */
     grid-template-areas:
-      "identity   identity   identity"
-      "portrait   bio        resources"
-      "powers     bio        resources"
-      "powers     attributes resources"
-      "powers     skills     resources"
-      "wargear    skills     resources"
-      "wargear    skills     injuries"
-      "wargear    skills     injuries";
+      "identity    identity     identity"
+      "portrait    bio          resources"
+      "portrait    attributes   resources"
+      "wargear     attributes   resources"
+      "wargear     attributes   injuries"
+      "powers      skills       injuries";
   }
 
   /* Give the composition a bit of “designed” stagger without adding aesthetics */
@@ -193,7 +191,7 @@
     align-self: start;
   }
   #bio {
-    align-self: start;
+    align-self: stretch;
   }
   #resources {
     align-self: start;
@@ -201,7 +199,7 @@
   #powers {
     align-self: start;
   }
-  #wargear {
+  #gear {
     align-self: stretch;
   }
   #injuries {
@@ -295,9 +293,10 @@
   width: 100%;
   max-width: 220px;
 }
-.portrait-face__frame {
+.picture__frame {
   aspect-ratio: 1 / 1;
   width: 100%;
+  margin: 0;
 }
 
 /* identity grid container */
@@ -389,7 +388,7 @@
 
 /* ---------------- Desktop: portrait rail + 12-col mosaic ---------------- */
 
-@media (min-width: 980px) {
+@media (min-width: 800px) {
   .sheet-head {
     grid-template-columns: 1fr 220px;
     column-gap: var(--gap-5);
@@ -474,4 +473,1396 @@
   #objective {
     min-block-size: auto;
   }
+}
+
+/* =========================
+   ATTRIBUTES: RADIAL RING
+   ========================= */
+
+/* Enable ring layout on larger screens */
+@media (min-width: 800px) {
+  #attributes {
+    position: relative; /* allows z-index + overlap context */
+  }
+
+  /* Make the table-wrap a big square stage that overlaps its surroundings */
+  #attributes .table-wrap {
+    position: relative;
+
+    /* intentionally exceed the card bounds */
+    width: min(1200px, 140%);
+    aspect-ratio: 1 / 1;
+
+    /* center it and let it spill on all sides */
+    margin-left: 50%;
+    transform: translateX(-50%);
+
+    /* overlap up/down as well */
+    margin-top: calc(var(--gap-6) * -1);
+    margin-bottom: calc(var(--gap-6) * -1);
+
+    /* keep it above neighbors */
+    z-index: 10;
+
+    /* IMPORTANT: allow the ring to spill outside */
+    overflow: visible;
+
+    container-type: size;
+  }
+
+  /* Ensure the table fills the stage */
+  #attributes .sheet-table {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Visually hide caption + thead, keep accessible */
+  #attributes-title,
+  #attributes .sheet-table caption,
+  #attributes .sheet-table thead {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Make the TABLE a positioning context (we're going to pull TRs out) */
+  #attributes .sheet-table {
+    position: relative;
+    border-collapse: separate; /* so cells can be independently sized */
+  }
+
+  /* Hide tbody flow; we'll absolutely place rows */
+  #attributes .sheet-table tbody {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin-left: -15cqw;
+  }
+
+  /* Each attribute row becomes a wedge "node" placed around the circle */
+  #attributes .sheet-table tr.attr {
+    position: absolute;
+    inset: 0; /* lets us rotate/translate from center consistently */
+    display: block;
+    pointer-events: none; /* turn back on for the interactive bits below */
+  }
+
+  /* Angle map (8 wedges, bottom empty)
+       We'll place 7 stats around, leaving 225deg (bottom-left-ish) empty by design.
+       You can rotate the whole wheel later with --wheel-rot if you want.
+    */
+  #attributes .sheet-table {
+    --wheel-rot: -135deg; /* puts first wedge at top; tweak later */
+    --wedge-step: 45deg;
+
+    /* Use vmin so it scales with the square stage, and clamp so it doesn't explode */
+    --ring-outer: clamp(160px, 40cqw, 300px);
+    --ring-abbr: clamp(120px, 30cqw, 230px);
+    --ring-mid: clamp(88px, 24cqw, 170px);
+    --ring-inner: clamp(52px, 12cqw, 110px);
+
+    /* Size balance (layout-scale only; styling later) */
+    --size-attr-name: 0.85rem; /* smaller */
+    --size-mid: 0.85rem; /* rating/bonus smaller */
+    --size-abbr: 3rem; /* bigger */
+    --size-total: 4rem; /* bigger */
+  }
+
+  #attributes tr.attr-s {
+    --wedge: 0;
+  }
+  #attributes tr.attr-t {
+    --wedge: 1;
+  }
+  #attributes tr.attr-a {
+    --wedge: 2;
+  }
+  #attributes tr.attr-i {
+    --wedge: 3;
+  }
+  #attributes tr.attr-wil {
+    --wedge: 4;
+  }
+  #attributes tr.attr-int {
+    --wedge: 5;
+  }
+  #attributes tr.attr-fel {
+    --wedge: 6;
+  }
+  /* wedge 7 intentionally empty */
+
+  /* We’ll create 4 “orbit items” per row:
+       - attr-name (outer tangential)
+       - attr-abbr (upright)
+       - rating input (tangential)
+       - bonus input (tangential)
+       - total output (upright)
+       Because the DOM is still a table row, we target existing elements.
+    */
+
+  /* Normalize TH/TD as layout containers */
+  #attributes tr.attr > th,
+  #attributes tr.attr > td {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Place the LABEL GROUP (name + abbr) using the TH */
+  #attributes tr.attr > th.attr-label {
+    pointer-events: none;
+  }
+
+  /* --------------- OUTER RING: full name (tangential) --------------- */
+  #attributes tr.attr .attr-name {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    /* Move to the ring, rotate tangential */
+    transform: translateX(50%) rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+      translateY(calc(-1 * var(--ring-outer))) translateX(-50%);
+
+    text-align: center;
+    transform-origin: 0 0;
+    white-space: nowrap;
+    font-size: var(--size-attr-name);
+  }
+
+  /* --------------- RING 2: abbreviation (upright) --------------- */
+  #attributes tr.attr .attr-abbr {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+      translateY(calc(-1 * var(--ring-abbr)))
+      rotate(calc(-1 * (var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))) translateY(-50%);
+
+    transform-origin: 0 0;
+    white-space: nowrap;
+    font-size: var(--size-abbr);
+  }
+
+  /* --------------- RING 3: rating + bonus (tangential, split) --------------- */
+  /* Rating is 2nd cell (td:nth-child(2)), Bonus is 3rd cell */
+  #attributes tr.attr > td:nth-child(2),
+  #attributes tr.attr > td:nth-child(3) {
+    left: 51%;
+    top: 50%;
+    width: 0;
+    height: 0;
+  }
+
+  /* Make inputs interactive again */
+  #attributes tr.attr input,
+  #attributes tr.attr output {
+    pointer-events: auto;
+  }
+
+  /* Shared positioning for the two mid ring inputs */
+  #attributes tr.attr > td:nth-child(2) input,
+  #attributes tr.attr > td:nth-child(3) input {
+    position: absolute;
+
+    /* IMPORTANT: we are placing the input itself, not the td */
+    left: 0;
+    top: 0;
+
+    transform-origin: 0 0;
+    white-space: nowrap;
+    width: 2rem;
+    font-size: var(--size-mid);
+  }
+
+  /* Rating: slightly “left” within the wedge (negative tangential offset) */
+  #attributes tr.attr > td:nth-child(2) input {
+    transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+      translateY(calc(-1 * var(--ring-mid))) translateX(-1.9rem) /* split left */;
+  }
+
+  /* Bonus: slightly “right” within the wedge (positive tangential offset) */
+  #attributes tr.attr > td:nth-child(3) input {
+    transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+      translateY(calc(-1 * var(--ring-mid))) translateX(0.7rem) /* split right */;
+  }
+
+  /* --------------- INNER RING: Total (upright) --------------- */
+  /* Total is 4th cell (td:nth-child(4)) */
+  #attributes tr.attr > td:nth-child(4) {
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+  }
+
+  #attributes tr.attr > td:nth-child(4) output {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+
+    transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+      translateY(calc(-1 * var(--ring-inner)))
+      rotate(calc(-1 * (var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))) translateX(-1.2rem)
+      translateY(-3rem);
+
+    /* layout sizing only */
+    min-width: 3.2rem;
+    min-height: 3.2rem;
+
+    display: grid;
+    place-items: center;
+    font-size: var(--size-total);
+  }
+
+  #attributes .attr-i .attr-name {
+    margin-left: -1em;
+  }
+
+  #attributes .attr-i input {
+    margin-left: -0.5em;
+  }
+
+  /* ----------------- IMPORTANT: remove the table's normal layout ----------------- */
+  #attributes .sheet-table colgroup,
+  #attributes .sheet-table thead,
+  #attributes .sheet-table tbody tr:not(.attr) {
+    display: none;
+  }
+
+  /* Make sure the original row header text isn't double-rendered by table defaults */
+  #attributes tr.attr th.attr-label {
+    background: transparent;
+  }
+
+  /* ----------------- Bottom wedge is empty -----------------
+       We don't create an 8th row; instead we leave wedge=7 unused.
+       But: ensure nothing wraps around into it by accidental transforms.
+       (Nothing to do here; geometry already leaves it empty.)
+    */
+
+  /* ----------------- Quick safety: keep labels/abbr from affecting layout ----------------- */
+  #attributes tr.attr .attr-name,
+  #attributes tr.attr .attr-abbr {
+    display: inline-block;
+  }
+}
+
+#bio-text {
+  width: 100%;
+  min-height: 24rem;
+  resize: none;
+}
+
+/* ==============================
+   SURVIVAL + RESOURCES (layout)
+   Section: #resources (right-top column)
+   ============================== */
+
+#resources {
+  /* shared sizing rails for the “Vitals list” feel */
+  --res-label-w: 9.5rem; /* label rail width (tune later) */
+  --res-val-min: 4.25rem; /* minimum box width */
+}
+
+/* Make sure the section itself can host tight internal compositions */
+#resources {
+  display: grid;
+  gap: var(--gap-4);
+}
+
+/* ---------- A) VITALS STRIP (Wounds / Shock / Wrath) ---------- */
+/* First .grid-3 inside #resources is the vitals strip */
+#resources > .grid-3:first-of-type {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap-3);
+  align-items: start;
+}
+
+/* Each vitals lane: a compact module with consistent internal rhythm */
+#resources > .grid-3:first-of-type > .stack {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: var(--gap-2);
+  min-width: 0;
+}
+
+/* Inside each vitals module: force two rows (Current / Max) */
+#resources > .grid-3:first-of-type > .stack > .field.inline {
+  display: grid;
+  grid-template-columns: auto minmax(var(--res-val-min), 1fr);
+  align-items: center;
+  column-gap: var(--gap-2);
+  row-gap: var(--gap-1);
+}
+
+/* Make the “Current” row visually dominant via size (layout only) */
+#resources > .grid-3:first-of-type > .stack > .field.inline:first-of-type input {
+  min-block-size: calc(var(--tap-min) * 1.35);
+}
+
+/* “Max” rows stay compact (outputs are usually smaller anyway) */
+#resources > .grid-3:first-of-type > .stack > .field.inline:last-of-type output,
+#resources > .grid-3:first-of-type > .stack > .field.inline:last-of-type input {
+  min-block-size: var(--tap-min);
+}
+
+/* Wrath hint shouldn’t push everything around: keep it “inside the lane” */
+#resources > .grid-3:first-of-type > .stack .hint {
+  margin: 0;
+  margin-top: var(--gap-2);
+  max-width: 28ch;
+}
+
+/* ---------- B) DERIVED STATS PANEL (STACKED, NOT 3-UP) ---------- */
+/* Second .grid-3 (the one with .top-gap) becomes a single column strip */
+#resources > .grid-3.top-gap {
+  display: grid;
+  grid-template-columns: 1fr; /* IMPORTANT: one column */
+  gap: var(--gap-4);
+  align-items: start;
+}
+
+/* Each sub-panel is a vertical “module” */
+#resources > .grid-3.top-gap > .stack {
+  display: grid;
+  gap: var(--gap-2);
+  align-content: start;
+  min-width: 0;
+}
+
+/* Inside each module: “vitals list” rails (label + value) */
+#resources > .grid-3.top-gap .field.inline {
+  display: grid;
+  grid-template-columns: minmax(0, var(--res-label-w)) minmax(var(--res-val-min), 1fr);
+  align-items: center;
+  column-gap: var(--gap-2);
+  row-gap: var(--gap-1);
+  min-width: 0;
+}
+
+/* Labels shouldn’t wrap and cause weird row breaks */
+#resources > .grid-3.top-gap .field.inline > label {
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Make inputs/outputs fill the value rail consistently */
+#resources > .grid-3.top-gap .field.inline > input,
+#resources > .grid-3.top-gap .field.inline > output {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Optional: visual rhythm between logical groups (layout-only spacing) */
+/* Defence & Resilience: separate armour line slightly */
+#resources > .grid-3.top-gap fieldset:nth-child(1) .field.inline:nth-of-type(3) {
+  margin-top: var(--gap-2);
+}
+
+/* Social/Resolve: separate Determination slightly */
+#resources > .grid-3.top-gap fieldset:nth-child(2) .field.inline:nth-of-type(3) {
+  margin-top: var(--gap-2);
+}
+
+/* World stats: allow Size to breathe if it’s text */
+#resources > .grid-3.top-gap fieldset:nth-child(3) .field.inline:last-child input {
+  min-width: 0;
+}
+
+/* ---------- C) STEALTH INSERT (addendum card at bottom) ---------- */
+#resources > .grid.top-gap {
+  display: grid;
+  gap: var(--gap-2);
+}
+
+/* The stealth fieldset: compact two-column insert */
+#resources > .grid.top-gap > fieldset.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-3);
+  align-items: start;
+  max-width: 100%;
+}
+
+/* Stealth fields: standard stacked label/input (not inline rails) */
+#resources > .grid.top-gap > fieldset.grid .field {
+  display: grid;
+  gap: var(--gap-1);
+  min-width: 0;
+}
+
+/* ---------- RESPONSIVE FALLBACKS ---------- */
+@media (max-width: 900px) {
+  /* In tighter viewports, stack derived panels (still a single column overall) */
+  #resources > .grid-3.top-gap {
+    grid-template-columns: 1fr;
+  }
+
+  /* Vitals strip becomes 1 column if needed */
+  #resources > .grid-3:first-of-type {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stealth insert can stay two columns until it can’t */
+  #resources > .grid.top-gap > fieldset.grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#resources .field.inline {
+  /* ensure grid items can actually shrink without forcing overflow */
+  min-width: 0;
+}
+
+/* Prevent labels from wrapping and pushing the value box into weird lines */
+#resources .field.inline > label {
+  white-space: normal;
+  min-width: 0;
+}
+
+/* Make inputs and outputs behave like the same “box” */
+#resources .field.inline > input,
+#resources .field.inline > output {
+  display: grid; /* gives us easy centering without styling */
+  align-items: center;
+  justify-items: center; /* centers numbers like Max 0 */
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Outputs need an explicit height or they collapse to text size */
+#resources .field.inline > output {
+  min-block-size: var(--tap-min);
+  height: var(--tap-min); /* keep consistent even if line-height differs */
+}
+
+/* Inputs: ensure they match the same box rhythm */
+#resources .field.inline > input {
+  min-block-size: var(--tap-min);
+  height: var(--tap-min);
+}
+
+/* In vitals, Current row is taller (already), but Max should still match box */
+#resources > .grid-3:first-of-type > .stack > .field.inline:last-of-type > output,
+#resources > .grid-3:first-of-type > .stack > .field.inline:last-of-type > input {
+  height: var(--tap-min);
+}
+
+/* Ensure value boxes don't “stick” to the label baseline */
+#resources .field.inline {
+  align-items: center; /* grid container alignment */
+}
+
+/* If any value text is still baseline-shifted, force it dead-center */
+#resources .field.inline > output.num {
+  line-height: 1;
+}
+
+/* Optional: give the Max row a consistent alignment to the right lane */
+#resources > .grid-3:first-of-type > .stack > .field.inline {
+  grid-template-columns: auto minmax(var(--res-val-min), 1fr);
+}
+
+/* Derived panels: label rail may be too wide for this column; allow it to shrink */
+#resources > .grid-3.top-gap .field.inline {
+  grid-template-columns: minmax(0, var(--res-label-w)) minmax(var(--res-val-min), 1fr);
+}
+
+/* If you still see “collisions”, it’s usually because the label rail is too wide.
+   This makes the whole panel more forgiving without changing style. */
+#resources {
+  --res-label-w: 8.25rem; /* was 9.5rem */
+}
+
+/* ==============================
+   WARGEAR (layout)
+   Section: #gear (bottom-left column)
+   ============================== */
+
+#gear {
+  /* tune-able layout rails */
+  --gear-num-min: 3.2rem; /* minimum width for small numeric-ish fields */
+  --gear-num-max: 4.8rem; /* typical max before it feels wasteful */
+  --gear-range-min: 6.5rem;
+  --gear-gap: var(--gap-2);
+}
+
+/* Keep the section content vertically composed */
+#gear {
+  display: grid;
+  gap: var(--gap-3);
+}
+
+/* Prevent table-wrap from forcing scrollbars in this “card rail” design */
+#gear .table-wrap {
+  overflow: visible;
+}
+
+#gear .sheet-table {
+  min-width: 0 !important;
+  width: 100%;
+}
+
+/* ---------- WEAPONS: 3-line rail per weapon row ---------- */
+/* Target the FIRST table-wrap in #gear = Weapons table */
+#gear > .table-wrap:first-of-type .sheet-table {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed; /* prevent content-driven width blowups */
+}
+
+/* We keep semantics, but visually reflow the table into a “stack of grids”. */
+@media (min-width: 640px) {
+  /* Turn the table into a vertical list */
+  #gear > .table-wrap:first-of-type .sheet-table,
+  #gear > .table-wrap:first-of-type .sheet-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Hide the thead visually (still accessible to screen readers) */
+  #gear > .table-wrap:first-of-type .sheet-table thead {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Each weapon <tr> becomes a 3-row grid “rail card” */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr {
+    display: grid;
+
+    /* Row 1 and Row 3 span all columns; Row 2 is 6 equal stat boxes */
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+
+    column-gap: var(--gap-2);
+    row-gap: var(--gap-2);
+
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Make every cell behave like a grid item */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td {
+    min-width: 0;
+    display: block;
+    padding: 0; /* layout-only: let your existing card/table padding rules handle it */
+  }
+
+  /* Line 1: Name spans across up to salvo; Range sits on the right */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(1) {
+    grid-column: 1 / 7; /* name uses columns 1..6 */
+    grid-row: 1;
+  }
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(7) {
+    grid-column: 7; /* range */
+    grid-row: 1;
+    justify-self: stretch;
+  }
+
+  /* Line 2: Pool / Dmg / ED / AP / Salvo occupy columns 2..6 */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(2) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(3) {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(4) {
+    grid-column: 4;
+    grid-row: 2;
+  }
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(5) {
+    grid-column: 5;
+    grid-row: 2;
+  }
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(6) {
+    grid-column: 6;
+    grid-row: 2;
+  }
+
+  /* Optional: keep column 1 in line 2 empty (a “gutter” under the name) */
+  /* nothing placed in grid-column: 1, grid-row: 2 */
+
+  /* Line 3: Traits spans full width */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(8) {
+    grid-column: 2 / 8;
+    grid-row: 3;
+  }
+
+  /* Inputs fill their allocated cells cleanly */
+  #gear > .table-wrap:first-of-type .sheet-table input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Give the “name” input a slightly taller rail (layout-only) */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(1) input {
+    min-block-size: calc(var(--tap-min) * 1.1);
+  }
+
+  /* Compact the numeric row slightly (still tappable) */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(2) input,
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(3) input,
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(4) input,
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(5) input,
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(6) input {
+    min-block-size: var(--tap-min);
+  }
+
+  /* Make traits comfortably writable */
+  #gear > .table-wrap:first-of-type .sheet-table tbody tr > td:nth-child(8) input {
+    min-block-size: calc(var(--tap-min) * 1.1);
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ---------- ARMOUR: keep it simple + readable in narrow column ---------- */
+/* Second table-wrap in #gear = Armour table */
+#gear > .table-wrap:nth-of-type(2) .sheet-table {
+  width: 100%;
+}
+#gear > .table-wrap:nth-of-type(2) .sheet-table colgroup {
+  display: none; /* if you add one later, layout remains driven here */
+}
+
+@media (min-width: 640px) {
+  /* Keep armour as a normal table, but enforce sensible column proportions */
+  #gear > .table-wrap:nth-of-type(2) .sheet-table {
+    table-layout: fixed;
+  }
+  #gear > .table-wrap:nth-of-type(2) .sheet-table th:nth-child(1),
+  #gear > .table-wrap:nth-of-type(2) .sheet-table td:nth-child(1) {
+    width: 55%;
+  }
+  #gear > .table-wrap:nth-of-type(2) .sheet-table th:nth-child(2),
+  #gear > .table-wrap:nth-of-type(2) .sheet-table td:nth-child(2) {
+    width: 15%;
+  }
+  #gear > .table-wrap:nth-of-type(2) .sheet-table th:nth-child(3),
+  #gear > .table-wrap:nth-of-type(2) .sheet-table td:nth-child(3) {
+    width: 30%;
+  }
+  #gear > .table-wrap:nth-of-type(2) .sheet-table input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ---------- GEAR NOTES: grows vertically, stays anchored ---------- */
+#gear #gearNotes {
+  width: 100%;
+  min-width: 0;
+  resize: vertical; /* user-controlled growth */
+}
+
+/* ==============================
+   INJURIES / CORRUPTION / XP / NOTES (layout)
+   Section: #injuries (right-bottom column)
+   ============================== */
+
+#injuries {
+  /* rails (layout only) */
+  --inj-stamp-gap: var(--gap-3);
+  --inj-step: 1.25rem; /* how much the wells “stagger” */
+  --inj-label-w: 10rem; /* inline label rail */
+  --inj-val-min: 5.25rem; /* minimum value box */
+  --inj-xp-inset: 2.5rem; /* how much XP tucks in */
+}
+
+#injuries .injuries-layout {
+  display: grid;
+  gap: var(--gap-4);
+  align-items: start;
+}
+
+/* ------------------------------
+   1) Corruption “stamp strip”
+   ------------------------------ */
+
+#injuries .corruption-stamp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--inj-stamp-gap);
+  align-items: start;
+  margin-bottom: var(--gap-3);
+}
+
+/* Keep these as compact “stamp rows”: label + value */
+#injuries .corruption-stamp .field.inline {
+  display: grid;
+  grid-template-columns: auto minmax(var(--inj-val-min), 1fr);
+  align-items: center;
+  column-gap: var(--gap-2);
+  row-gap: var(--gap-1);
+  min-width: 0;
+}
+
+/* Make stamp inputs a touch taller than normal rows (layout sizing only) */
+#injuries .corruption-stamp input {
+  min-block-size: calc(var(--tap-min) * 1.1);
+}
+
+/* ------------------------------
+   2) Stepped injury writing wells
+   ------------------------------ */
+
+#injuries .injury-wells {
+  display: grid;
+  gap: var(--gap-3);
+}
+
+/* Make each well a stable block (so offsets don’t collapse weirdly) */
+#injuries .injury-well {
+  display: grid;
+  gap: var(--gap-1);
+  min-width: 0;
+}
+
+/* The “crafted” stagger: subtle sideways offsets */
+#injuries .injury-well--memorable {
+  margin-left: 0;
+  margin-right: calc(var(--inj-step) * 0.35);
+}
+
+#injuries .injury-well--traumatic {
+  margin-left: var(--inj-step);
+  margin-right: 0;
+}
+
+#injuries .injury-well--mutations {
+  margin-left: calc(var(--inj-step) * 0.55);
+  margin-right: calc(var(--inj-step) * 0.15);
+}
+
+/* Let textareas grow horizontally without forcing overflow */
+#injuries textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ------------------------------
+   3) XP inset module (not parallel)
+   ------------------------------ */
+
+#injuries .xp-panel {
+  /* inset to create that “module stuck to the side” feeling */
+  justify-self: end;
+  width: min(100%, 28rem);
+  margin-right: var(--inj-xp-inset);
+}
+
+/* XP rows use inline rails (same as your other list modules) */
+#injuries .xp-panel .field.inline {
+  display: grid;
+  grid-template-columns: var(--inj-label-w) minmax(var(--inj-val-min), 1fr);
+  align-items: center;
+  column-gap: var(--gap-2);
+  row-gap: var(--gap-1);
+  min-width: 0;
+}
+
+/* ------------------------------
+   4) Notes anchor (big, stable)
+   ------------------------------ */
+
+#injuries .notes-panel {
+  display: grid;
+  gap: var(--gap-2);
+}
+
+#injuries .notes-panel textarea {
+  /* anchor block: give it presence */
+  min-block-size: clamp(10rem, 22vh, 18rem);
+}
+
+/* ------------------------------
+   Responsive: soften offsets/inset
+   ------------------------------ */
+
+@media (max-width: 900px) {
+  #injuries {
+    --inj-step: 0.75rem;
+    --inj-xp-inset: 0rem;
+    --inj-label-w: 9rem;
+  }
+
+  #injuries .corruption-stamp {
+    grid-template-columns: 1fr; /* stack stamps when space is tight */
+  }
+
+  #injuries .xp-panel {
+    justify-self: stretch;
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* Print: keep it calm and aligned */
+@media print {
+  #injuries {
+    --inj-step: 0rem;
+    --inj-xp-inset: 0rem;
+  }
+
+  #injuries .xp-panel {
+    justify-self: stretch;
+    width: 100%;
+  }
+}
+
+/* =========================
+   SKILLS: TRACK LIST (layout)
+   Section: #skills (bottom-center column)
+   ========================= */
+
+#skills {
+  /* tune rails here (layout only) */
+  --sk-attr-w: 3.25rem; /* attribute chip width */
+  --sk-box-w: 4.25rem; /* rating/bonus width */
+  --sk-total-w: 5.25rem; /* total width (more important) */
+  --sk-row-gap: var(--gap-2);
+  --sk-col-gap: var(--gap-3);
+}
+
+/* Make room for “designed” rows */
+#skills .table-wrap {
+  overflow: visible; /* allow a bit of flourish later if needed */
+}
+
+/* Visually hide caption + thead, keep accessible */
+#skills .sheet-table caption,
+#skills .sheet-table thead {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Turn table into a stacked “list” */
+#skills .sheet-table {
+  width: 100%;
+  border-collapse: separate; /* helps later style themes */
+  border-spacing: 0;
+  min-width: 0;
+}
+
+/* tbody becomes the vertical stack */
+#skills .sheet-table tbody {
+  display: grid;
+  gap: var(--sk-row-gap);
+}
+
+/* Each row is a designed track (grid) */
+#skills .sheet-table tbody tr {
+  display: grid;
+  align-items: center;
+  min-width: 0;
+
+  /* Track layout:
+     [Skill name....................] [Attr] [Rating] [Bonus] [Total]
+  */
+  grid-template-columns:
+    minmax(12rem, 1fr)
+    var(--sk-attr-w)
+    var(--sk-box-w)
+    var(--sk-box-w)
+    var(--sk-total-w);
+
+  column-gap: var(--sk-col-gap);
+
+  /* give each row a stable height */
+  min-block-size: calc(var(--tap-min) * 1.15);
+}
+
+/* Remove table-cell behavior that fights grid sizing */
+#skills .sheet-table tbody tr > th,
+#skills .sheet-table tbody tr > td {
+  display: block;
+  min-width: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+/* Skill name rail */
+#skills .sheet-table tbody tr > th[scope="row"] {
+  /* keep as the anchor */
+  justify-self: start;
+  width: 100%;
+}
+
+/* Attribute chip cell */
+#skills .sheet-table tbody tr > td:nth-child(2) {
+  justify-self: center;
+  width: 100%;
+  text-align: center; /* just layout; style will theme it later */
+}
+
+/* Rating / Bonus inputs: fill their boxes */
+#skills .sheet-table tbody tr > td:nth-child(3) input,
+#skills .sheet-table tbody tr > td:nth-child(4) input {
+  width: 100%;
+  min-width: 0;
+  min-block-size: var(--tap-min);
+}
+
+/* Total output: bigger + centered */
+#skills .sheet-table tbody tr > td:nth-child(5) output {
+  width: 100%;
+  min-width: 0;
+  min-block-size: calc(var(--tap-min) * 1.25);
+  display: grid;
+  place-items: center;
+}
+
+/* If the output element isn't naturally block in your base CSS */
+#skills output.num {
+  display: inline-block;
+}
+
+/* Mobile / narrow: keep it readable, avoid horizontal squeeze.
+   We keep the “track” feel but stack the numeric boxes under the name rail. */
+@media (max-width: 900px) {
+  #skills .sheet-table tbody tr {
+    grid-template-columns: 1fr;
+    row-gap: var(--gap-2);
+    min-block-size: unset;
+    align-items: start;
+  }
+
+  /* skill name stays first */
+  #skills .sheet-table tbody tr > th[scope="row"] {
+    order: 1;
+  }
+
+  /* attribute chip next to name (small row) */
+  #skills .sheet-table tbody tr > td:nth-child(2) {
+    order: 2;
+    justify-self: start;
+    width: var(--sk-attr-w);
+  }
+
+  /* rating/bonus/total become a 3-wide strip */
+  #skills .sheet-table tbody tr > td:nth-child(3),
+  #skills .sheet-table tbody tr > td:nth-child(4),
+  #skills .sheet-table tbody tr > td:nth-child(5) {
+    order: 3;
+  }
+
+  /* wrap the three numeric cells into a subgrid */
+  #skills .sheet-table tbody tr > td:nth-child(3),
+  #skills .sheet-table tbody tr > td:nth-child(4),
+  #skills .sheet-table tbody tr > td:nth-child(5) {
+    display: inline-block;
+  }
+
+  #skills .sheet-table tbody tr {
+    /* create a second row strip using grid areas */
+    grid-template-areas:
+      "name"
+      "numbers";
+  }
+
+  #skills .sheet-table tbody tr > th[scope="row"] {
+    grid-area: name;
+  }
+
+  /* Make the numeric strip itself a grid by wrapping with :has? (not reliable).
+     Instead: place the three cells on the same line using a nested grid via display: contents. */
+  #skills .sheet-table tbody tr > td:nth-child(2),
+  #skills .sheet-table tbody tr > td:nth-child(3),
+  #skills .sheet-table tbody tr > td:nth-child(4),
+  #skills .sheet-table tbody tr > td:nth-child(5) {
+    grid-area: numbers;
+  }
+
+  #skills .sheet-table tbody tr > td:nth-child(2),
+  #skills .sheet-table tbody tr > td:nth-child(3),
+  #skills .sheet-table tbody tr > td:nth-child(4),
+  #skills .sheet-table tbody tr > td:nth-child(5) {
+    /* group them visually on one strip */
+    margin-right: var(--gap-2);
+  }
+
+  /* Make the strip align nicely */
+  #skills .sheet-table tbody tr > td:nth-child(2) {
+    vertical-align: middle;
+  }
+
+  /* Force boxes to reasonable widths on narrow screens */
+  #skills .sheet-table tbody tr > td:nth-child(3),
+  #skills .sheet-table tbody tr > td:nth-child(4) {
+    width: var(--sk-box-w);
+  }
+
+  #skills .sheet-table tbody tr > td:nth-child(5) {
+    width: var(--sk-total-w);
+  }
+}
+
+/* Print: keep table semantics but preserve the designed track widths */
+@media print {
+  #skills .sheet-table tbody {
+    gap: var(--gap-1);
+  }
+}
+
+/* ==============================
+   POWERS + TALENTS (layout)
+   Section: #powers (left-middle column)
+   ============================== */
+
+#powers {
+  --pow-rail: 2.25rem; /* number rail width for quick list */
+  --pow-gap: var(--gap-3);
+  display: grid;
+  gap: var(--gap-4);
+}
+
+#powers .sheet-table {
+  min-width: 0;
+}
+
+/* ---------- A) Quick list + Faith (top) ---------- */
+
+#powers > .grid-2 {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr; /* quick list dominates */
+  gap: var(--pow-gap);
+  align-items: start;
+}
+
+/* Quick list feels like a numbered rail + lines */
+#powers > .grid-2 > fieldset.stack:first-child {
+  display: grid;
+  align-content: start;
+  gap: var(--gap-2);
+  min-width: 0;
+}
+
+/* Each numbered power line: [#] [input] */
+#powers > .grid-2 > fieldset.stack:first-child .field {
+  display: grid;
+  grid-template-columns: var(--pow-rail) minmax(0, 1fr);
+  gap: var(--gap-2);
+  align-items: center;
+  min-width: 0;
+}
+
+/* Make the number label behave like a fixed rail “token” (layout only) */
+#powers > .grid-2 > fieldset.stack:first-child .field > label {
+  justify-self: center;
+  align-self: center;
+  line-height: 1;
+  /* keep it from pushing row height unpredictably */
+  max-width: 100%;
+}
+
+/* Inputs fill their lane */
+#powers > .grid-2 > fieldset.stack:first-child .field > input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Faith block: compact “badge” beside quick list */
+#powers > .grid-2 > fieldset.stack:last-child {
+  display: grid;
+  align-content: start;
+  gap: var(--gap-2);
+  min-width: 0;
+}
+
+/* Faith rows: label rail + value rail */
+#powers > .grid-2 > fieldset.stack:last-child .field.inline {
+  display: grid;
+  grid-template-columns: 1fr minmax(5.5rem, 1fr);
+  gap: var(--gap-2);
+  align-items: center;
+}
+
+/* Keep the faith inputs stable */
+#powers > .grid-2 > fieldset.stack:last-child .field.inline input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* If space gets tight, stack Quick list and Faith */
+@media (max-width: 900px) {
+  #powers > .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* When stacked, faith becomes a compact block under the list */
+  #powers > .grid-2 > fieldset.stack:last-child .field.inline {
+    grid-template-columns: var(--pow-rail) 1fr; /* echo the “rail” rhythm */
+  }
+}
+
+/* ---------- B) Power details: table -> stacked “cards” per row ---------- */
+
+/* Hide table header visually (keep semantics) */
+#powers .sheet-table thead {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Make the details area feel like a list of blocks */
+#powers .table-wrap {
+  overflow: visible; /* layout only; style can add borders later */
+}
+
+/* Let tbody become a vertical list */
+#powers .sheet-table.compact tbody {
+  display: grid;
+  gap: var(--gap-3);
+}
+
+/*
+  Each TR becomes a mini-layout:
+  Row 1: Name (full width)
+  Row 2: DN | Activation | Duration
+  Row 3: Range | Target
+  Row 4: Effect (full width)
+*/
+#powers .sheet-table.compact tbody tr {
+  display: grid;
+  gap: var(--gap-2);
+  grid-template-columns: 1fr; /* define rows via areas below */
+  align-items: start;
+  min-width: 0;
+}
+
+/* Treat each cell as a block so inputs can fill */
+#powers .sheet-table.compact tbody tr > td,
+#powers .sheet-table.compact tbody tr > th {
+  display: block;
+  min-width: 0;
+}
+
+/* Ensure all inputs fill their “card” cells */
+#powers .sheet-table.compact tbody tr input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Place cells into the stacked structure */
+#powers .sheet-table.compact tbody tr > td:nth-child(1) {
+  /* Power name */
+  grid-column: 1 / -1;
+}
+
+#powers .sheet-table.compact tbody tr > td:nth-child(2),
+#powers .sheet-table.compact tbody tr > td:nth-child(3),
+#powers .sheet-table.compact tbody tr > td:nth-child(4) {
+  /* DN / Activation / Duration row */
+  display: grid;
+  grid-template-columns: 1fr; /* keep internal stable */
+}
+
+/* Make a 3-up row for DN / Activation / Duration */
+#powers .sheet-table.compact tbody tr {
+  grid-template-areas:
+    "name"
+    "meta"
+    "rt"
+    "effect";
+}
+
+/* Wrap “meta row” and “range/target row” using an internal grid via :has fallback-friendly method:
+   We can’t add wrappers, so we use grid placement by assigning columns for those cells. */
+#powers .sheet-table.compact tbody tr {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+#powers .sheet-table.compact tbody tr > td:nth-child(1) {
+  grid-column: 1 / -1; /* name */
+}
+
+#powers .sheet-table.compact tbody tr > td:nth-child(2) {
+  grid-column: 1 / 2; /* DN (small) */
+}
+#powers .sheet-table.compact tbody tr > td:nth-child(3) {
+  grid-column: 2 / 4; /* Activation */
+}
+#powers .sheet-table.compact tbody tr > td:nth-child(4) {
+  grid-column: 4 / 7; /* Duration */
+}
+
+#powers .sheet-table.compact tbody tr > td:nth-child(5) {
+  grid-column: 1 / 4; /* Range */
+}
+#powers .sheet-table.compact tbody tr > td:nth-child(6) {
+  grid-column: 4 / 7; /* Target */
+}
+
+#powers .sheet-table.compact tbody tr > td:nth-child(7) {
+  grid-column: 1 / -1; /* Effect */
+}
+
+/* Add vertical rhythm between the logical rows */
+#powers .sheet-table.compact tbody tr > td:nth-child(2),
+#powers .sheet-table.compact tbody tr > td:nth-child(3),
+#powers .sheet-table.compact tbody tr > td:nth-child(4) {
+  margin-top: var(--gap-1);
+}
+#powers .sheet-table.compact tbody tr > td:nth-child(5),
+#powers .sheet-table.compact tbody tr > td:nth-child(6) {
+  margin-top: var(--gap-2);
+}
+#powers .sheet-table.compact tbody tr > td:nth-child(7) {
+  margin-top: var(--gap-2);
+  min-block-size: calc(var(--tap-min) * 1.2); /* gives Effect a “big line” feel */
+}
+
+/* If the column becomes too narrow, stack meta fields instead of 3-up */
+@media (max-width: 520px) {
+  #powers .sheet-table.compact tbody tr {
+    grid-template-columns: 1fr;
+  }
+
+  #powers .sheet-table.compact tbody tr > td:nth-child(2),
+  #powers .sheet-table.compact tbody tr > td:nth-child(3),
+  #powers .sheet-table.compact tbody tr > td:nth-child(4),
+  #powers .sheet-table.compact tbody tr > td:nth-child(5),
+  #powers .sheet-table.compact tbody tr > td:nth-child(6),
+  #powers .sheet-table.compact tbody tr > td:nth-child(7) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- C) Talents block (bottom) ---------- */
+
+#powers > .top-gap {
+  display: grid;
+  gap: var(--gap-2);
+}
+
+/* Give the talents textarea more presence (layout only) */
+#powers textarea#talents {
+  min-block-size: calc(var(--tap-min) * 5.5);
+}
+
+/* =========================
+   TYPE SCALE (layout-level)
+   ========================= */
+
+:root {
+  /* “importance” scale */
+  --fs-h2: clamp(1.05rem, 1vw + 0.75rem, 1.35rem);
+  --fs-h3: clamp(0.95rem, 0.7vw + 0.7rem, 1.1rem);
+
+  /* “small rail” text (labels, legends, helpers) */
+  --fs-quiet: 0.9rem;
+
+  /* “hero” fields */
+  --fs-name: clamp(1.35rem, 1.6vw + 1.5rem, 4rem);
+}
+
+/* Headings should not burn vertical space */
+.card > h2 {
+  font-size: var(--fs-h2);
+  margin: 0 0 var(--gap-2);
+  line-height: 1.1;
+}
+
+.card .subhead,
+.card > h3 {
+  font-size: var(--fs-h3);
+  margin: 0 0 var(--gap-2);
+  line-height: 1.1;
+}
+
+/* Legends tend to be “rail labels” */
+fieldset > legend {
+  font-size: var(--fs-quiet);
+}
+
+/* Hints should be compact and not create big gaps */
+.hint {
+  margin: 0;
+  font-size: var(--fs-quiet);
+  max-width: 60ch;
+}
+
+/* Character name should read like the banner anchor */
+#characterName {
+  font-size: var(--fs-name);
+  line-height: 1.05;
+}
+
+/* =========================
+   ATTR ring: “edit assist”
+   ========================= */
+
+#attributes .sheet-table tbody tr.attr > td:nth-child(2) input:is(:hover, :focus),
+#attributes .sheet-table tbody tr.attr > td:nth-child(3) input:is(:hover, :focus) {
+  z-index: 50;
+  width: 5em;
+}
+
+#attributes .sheet-table tbody tr.attr > td:nth-child(2) input:is(:hover, :focus) {
+  transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+    translateY(calc(-1 * var(--ring-mid))) translateX(-1.9rem) scale(1.5);
+}
+
+#attributes .sheet-table tbody tr.attr > td:nth-child(3) input:is(:hover, :focus) {
+  transform: rotate(calc(var(--wheel-rot) + (var(--wedge) * var(--wedge-step))))
+    translateY(calc(-1 * var(--ring-mid))) translateX(0.7rem) scale(1.5);
+}
+
+#attributes .sheet-table tbody tr.attr > td:nth-child(2) input:is(:focus),
+#attributes .sheet-table tbody tr.attr > td:nth-child(3) input:is(:focus) {
+  transform: translateX(-2.5em) translateY(-0.75em) scale(1.5);
+}
+
+/* =========================
+Fixes
+   ========================= */
+
+/* Prevent table internals from forcing width explosions */
+.sheet-table,
+.sheet-table * {
+  min-width: 0;
+}
+
+/* Inputs/outputs should fill their cell in layout mode */
+.sheet-table input,
+.sheet-table output,
+.sheet-table textarea {
+  width: 100%;
+  min-width: 0;
 }
