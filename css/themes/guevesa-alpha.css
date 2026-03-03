@@ -1,0 +1,193 @@
+/* guevesa-alpha.css — Theme #6: "T’au Gue’vesa Dossier"
+   Vibe: clean sci-fi personnel file + subtle infiltration anomalies.
+   Keep it restrained: 95% dossier, 5% "something's off".
+*/
+
+:root {
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-display:
+    "Space Grotesk", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  /* Palette */
+  --page-bg: #0b1116; /* deep slate */
+  --card-bg: #f6f9fb; /* dossier paper */
+  --ink: #1d2a33; /* slate ink */
+  --ink-soft: rgba(29, 42, 51, 0.78);
+  --muted: rgba(29, 42, 51, 0.55);
+
+  --line-color: rgba(29, 42, 51, 0.18);
+  --line-strong-color: rgba(29, 42, 51, 0.32);
+
+  --accent: #2aa6a6; /* teal */
+  --accent-2: #d07a2a; /* warm signal */
+  --stamp: #7a1f1f; /* “human admin” stamp red (subtle) */
+
+  --field-bg: rgba(255, 255, 255, 0.55);
+  --field-line: rgba(29, 42, 51, 0.28);
+  --field-focus: rgba(42, 166, 166, 0.55);
+}
+
+/* Clean slate background with faint tech bands */
+body {
+  background:
+    radial-gradient(900px 520px at 50% 0%, rgba(42, 166, 166, 0.14), transparent 58%),
+    radial-gradient(900px 520px at 20% 70%, rgba(208, 122, 42, 0.08), transparent 65%),
+    linear-gradient(180deg, #070c10, #0b1116 55%, #05090d);
+}
+
+/* Dossier paper: crisp, light, minimal shadow */
+.card {
+  position: relative;
+  background:
+    /* subtle paper fiber */
+    repeating-linear-gradient(0deg, rgba(29, 42, 51, 0.01) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(29, 42, 51, 0.008) 0 1px, transparent 1px 11px),
+    var(--card-bg);
+  border: 1px solid var(--line-color);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+/* Headers: clean sci-fi, not rounded, not glossy */
+h2,
+h3,
+.brand strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Make section titles look like file headers */
+.card > h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid rgba(42, 166, 166, 0.28);
+  background: rgba(42, 166, 166, 0.06);
+}
+.card > h2::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(42, 166, 166, 0.55);
+  transform: rotate(45deg);
+  background: rgba(42, 166, 166, 0.08);
+}
+
+/* Labels / captions: compact “annotation” style */
+label,
+caption,
+legend,
+.nav a {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: rgba(29, 42, 51, 0.7);
+}
+
+/* Inputs: crisp inset fields (still “document”, not app controls) */
+input,
+textarea,
+select {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(29, 42, 51, 0.12);
+  border-bottom: 1px solid rgba(29, 42, 51, 0.32);
+}
+
+/* Buttons: flat tabs */
+button {
+  border-color: rgba(29, 42, 51, 0.3);
+  background: rgba(42, 166, 166, 0.06);
+  color: rgba(29, 42, 51, 0.95);
+}
+button:hover {
+  border-color: rgba(208, 122, 42, 0.65);
+}
+
+/* Nav: index tabs */
+.nav a {
+  border: 1px solid rgba(29, 42, 51, 0.18);
+  padding: 4px 8px;
+  background: rgba(246, 249, 251, 0.78);
+  color: rgba(29, 42, 51, 0.92);
+}
+.nav a:hover {
+  text-decoration: none;
+  border-color: rgba(42, 166, 166, 0.55);
+}
+
+/* ------- subtle “Alpha” anomalies (Easter egg) ------- */
+/* 1) faint watermark fragments on a couple of big cards (safe if IDs exist) */
+#skills.card::before,
+#powers.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08; /* keep subtle */
+  background:
+    radial-gradient(circle at 18% 22%, rgba(29, 42, 51, 0.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 64%, rgba(29, 42, 51, 0.9) 0 2px, transparent 3px),
+    linear-gradient(135deg, transparent 45%, rgba(29, 42, 51, 0.5) 46% 47%, transparent 48%),
+    linear-gradient(225deg, transparent 52%, rgba(29, 42, 51, 0.5) 53% 54%, transparent 55%);
+  mix-blend-mode: multiply;
+}
+
+/* 2) one slightly “wrong” stamp code on identity (safe if ID exists) */
+#identity.card::after {
+  content: "CLEARANCE: GUE-7 • REF: 0A-XX-13";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(122, 31, 31, 0.7);
+  border: 1px solid rgba(122, 31, 31, 0.35);
+  padding: 4px 6px;
+  background: rgba(246, 249, 251, 0.55);
+  transform: rotate(-1deg);
+}
+
+/* Print: clean dossier page */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .card {
+    background: #fff !important;
+    box-shadow: none !important;
+    border-color: #000 !important;
+  }
+
+  h2,
+  h3,
+  label,
+  caption,
+  legend {
+    color: #000 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid transparent !important;
+    border-bottom-color: #000 !important;
+  }
+
+  /* Remove anomalies in print (keep it “official”) */
+  #skills.card::before,
+  #powers.card::before,
+  #identity.card::after {
+    display: none !important;
+  }
+}

@@ -1,0 +1,187 @@
+/* ministorum.css — Theme #3: "Ministorum Scroll"
+   Target: illuminated parchment, ink, rubric red, wax seal accents.
+   Must remain playable, not ornate to the point of illegible.
+*/
+
+:root {
+  --font-body: "Crimson Pro", ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display: "Uncial Antiqua", ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Palette */
+  --page-bg: #18130e; /* dark wood / candle shadow */
+  --card-bg: #f3ead2; /* parchment */
+  --ink: #221a12; /* ink */
+  --ink-soft: rgba(34, 26, 18, 0.82);
+  --muted: rgba(34, 26, 18, 0.58);
+
+  --line-color: rgba(34, 26, 18, 0.22);
+  --line-strong-color: rgba(34, 26, 18, 0.38);
+
+  --accent: #3a2f26; /* soot brown */
+  --accent-2: #c9a227; /* gold hint */
+  --stamp: #7b0f1c; /* wax red */
+
+  /* Fields */
+  --field-bg: rgba(255, 255, 255, 0.35);
+  --field-line: rgba(34, 26, 18, 0.34);
+  --field-focus: rgba(123, 15, 28, 0.45);
+}
+
+/* Candlelit desk with parchment glow */
+body {
+  background:
+    radial-gradient(900px 520px at 50% 0%, rgba(255, 220, 160, 0.18), transparent 58%),
+    radial-gradient(700px 500px at 15% 55%, rgba(201, 162, 39, 0.08), transparent 62%),
+    radial-gradient(900px 520px at 85% 45%, rgba(123, 15, 28, 0.06), transparent 65%),
+    linear-gradient(180deg, #120e0a, #18130e 55%, #0f0b08);
+}
+
+/* Parchment surface: subtle grain + edge vignette */
+.card {
+  position: relative;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(0, 0, 0, 0.06), transparent 55%),
+    radial-gradient(120% 110% at 50% 100%, rgba(0, 0, 0, 0.05), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(34, 26, 18, 0.015) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(90deg, rgba(34, 26, 18, 0.012) 0 1px, transparent 1px 9px),
+    var(--card-bg);
+  border: 1px solid var(--line-color);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* Headings: illuminated manuscript vibe (but restrained) */
+h2,
+h3,
+.brand strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+/* Rubric red section labels */
+label,
+caption,
+legend,
+.nav a {
+  font-family: "IM Fell English", var(--font-body);
+  letter-spacing: 0.04em;
+}
+
+/* Make primary section titles feel like rubric headers */
+.card > h2 {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid rgba(123, 15, 28, 0.35);
+  background: rgba(123, 15, 28, 0.05);
+  color: rgba(34, 26, 18, 0.92);
+}
+.card > h2::first-letter {
+  color: var(--stamp);
+}
+
+/* Inputs: inked lines + “scribe” feeling */
+input,
+textarea,
+select {
+  background: rgba(255, 255, 255, 0.28);
+  border-bottom-color: rgba(34, 26, 18, 0.38);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+}
+
+/* Slightly “hand-ruled” feel for textareas */
+textarea {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 24px, rgba(34, 26, 18, 0.06) 24px 25px),
+    rgba(255, 255, 255, 0.22);
+}
+
+/* Buttons: wax-seal tabs (not modern pills) */
+button {
+  border-color: rgba(34, 26, 18, 0.45);
+  background: rgba(201, 162, 39, 0.08);
+}
+button:hover {
+  border-color: rgba(123, 15, 28, 0.6);
+}
+
+/* Nav tabs: parchment slips */
+.nav a {
+  border: 1px solid rgba(34, 26, 18, 0.25);
+  padding: 4px 8px;
+  background: rgba(243, 234, 210, 0.75);
+}
+.nav a:hover {
+  text-decoration: none;
+  border-color: rgba(123, 15, 28, 0.55);
+}
+
+/* Wax seal accent on a few key sections (safe if IDs exist) */
+#identity.card::after,
+#injuries.card::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.2), transparent 40%),
+    radial-gradient(circle at 65% 70%, rgba(0, 0, 0, 0.18), transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(123, 15, 28, 0.95), rgba(90, 10, 18, 0.98));
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  opacity: 0.9;
+}
+
+/* Add a faint “seal mark” glyph without IP symbols */
+#identity.card::after,
+#injuries.card::after {
+  mask: radial-gradient(circle, #000 62%, transparent 63%);
+}
+#identity.card::before,
+#injuries.card::before {
+  content: "✠";
+  position: absolute;
+  top: 21px;
+  right: 26px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: rgba(243, 234, 210, 0.85);
+  transform: rotate(-10deg);
+  pointer-events: none;
+}
+
+/* Print: becomes clean parchment, minimal shadows */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .card {
+    background: #fff !important;
+    box-shadow: none !important;
+    border-color: #000 !important;
+  }
+
+  #identity.card::after,
+  #injuries.card::after,
+  #identity.card::before,
+  #injuries.card::before {
+    display: none !important; /* avoid heavy ink in print */
+  }
+
+  input,
+  textarea,
+  select {
+    background: transparent !important;
+    color: #000 !important;
+    border-bottom-color: #000 !important;
+  }
+
+  textarea {
+    background: transparent !important;
+  }
+}

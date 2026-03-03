@@ -1,0 +1,5 @@
+/* style.css — theme entry point
+   layout.css is fixed; this file only composes base + a theme.
+*/
+
+@import url("./base-style.css");

@@ -13,11 +13,6 @@
   --gap-4: 18px;
   --gap-5: 26px;
 
-  /* Central ring sizing (layout only) */
-  --ring-min: 320px;
-  --ring-ideal: 44vw;
-  --ring-max: 520px;
-
   --tap-min: 44px;
 }
 
@@ -223,7 +218,7 @@
   align-self: start;
 
   /* This sets an intentional “medallion” footprint even before we draw the wheel */
-  width: clamp(var(--ring-min), var(--ring-ideal), var(--ring-max));
+  width: 100%;
 }
 
 /* If you put an SVG/canvas inside, make it fill the ring container */
@@ -294,7 +289,6 @@
   max-width: 220px;
 }
 .picture__frame {
-  aspect-ratio: 1 / 1;
   width: 100%;
   margin: 0;
 }
@@ -491,7 +485,7 @@
 
     /* intentionally exceed the card bounds */
     width: min(1200px, 140%);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 0.9;
 
     /* center it and let it spill on all sides */
     margin-left: 50%;
@@ -535,6 +529,7 @@
   #attributes .sheet-table {
     position: relative;
     border-collapse: separate; /* so cells can be independently sized */
+    left: 5%;
   }
 
   /* Hide tbody flow; we'll absolutely place rows */
@@ -565,7 +560,7 @@
     --ring-outer: clamp(160px, 40cqw, 300px);
     --ring-abbr: clamp(120px, 30cqw, 230px);
     --ring-mid: clamp(88px, 24cqw, 170px);
-    --ring-inner: clamp(52px, 12cqw, 110px);
+    --ring-inner: clamp(52px, 9cqw, 110px);
 
     /* Size balance (layout-scale only; styling later) */
     --size-attr-name: 0.85rem; /* smaller */

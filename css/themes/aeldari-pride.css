@@ -1,0 +1,180 @@
+/* aeldari-pride.css — Theme #8: "Proud Aeldari Pilot/Sharpshooter File"
+   Vibe: elegant, airy, razor-thin rules, crystalline restraint.
+   No big blocks. Let whitespace + hierarchy do the work.
+*/
+
+:root {
+  --font-body: "Crimson Pro", ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  /* Palette */
+  --page-bg: #0a0a14; /* night violet */
+  --card-bg: #fbfbff; /* pearl */
+  --ink: #14122a; /* deep ink */
+  --ink-soft: rgba(20, 18, 42, 0.78);
+  --muted: rgba(20, 18, 42, 0.52);
+
+  --line-color: rgba(20, 18, 42, 0.16);
+  --line-strong-color: rgba(20, 18, 42, 0.28);
+
+  --accent: #8a7bff; /* lilac */
+  --accent-2: #b9c1d6; /* silver */
+  --stamp: #2b2a44; /* deep */
+
+  --field-bg: rgba(255, 255, 255, 0.7);
+  --field-line: rgba(20, 18, 42, 0.22);
+  --field-focus: rgba(138, 123, 255, 0.55);
+}
+
+/* Subtle aurora backdrop */
+body {
+  background:
+    radial-gradient(900px 520px at 50% 0%, rgba(138, 123, 255, 0.14), transparent 60%),
+    radial-gradient(900px 520px at 20% 70%, rgba(185, 193, 214, 0.1), transparent 65%),
+    linear-gradient(180deg, #070712, #0a0a14 55%, #05050f);
+}
+
+/* Paper: clean pearl with whisper of edge */
+.card {
+  position: relative;
+  background:
+    radial-gradient(120% 110% at 50% 0%, rgba(20, 18, 42, 0.03), transparent 60%), var(--card-bg);
+  border: 1px solid var(--line-color);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+/* Headings: elegant, not loud */
+h2,
+h3,
+.brand strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+/* Section headers: thin rules + airy spacing */
+.card > h2 {
+  display: inline-block;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid rgba(138, 123, 255, 0.38);
+  background: transparent;
+}
+.card > h2::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(138, 123, 255, 0),
+    rgba(138, 123, 255, 0.55),
+    rgba(138, 123, 255, 0)
+  );
+  opacity: 0.55;
+}
+
+/* Labels: silvered annotations */
+label,
+caption,
+legend,
+.nav a {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(20, 18, 42, 0.62);
+}
+
+/* Inputs: “ink on pearl” with thin underline */
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(20, 18, 42, 0.1);
+  border-bottom: 1px solid rgba(20, 18, 42, 0.24);
+}
+
+/* Numbers: mono clarity */
+input[type="number"],
+input.num,
+td .num {
+  font-family: var(--font-mono);
+}
+
+/* Buttons: minimal, like etched tabs */
+button {
+  border-color: rgba(20, 18, 42, 0.22);
+  background: rgba(138, 123, 255, 0.06);
+  color: rgba(20, 18, 42, 0.92);
+}
+button:hover {
+  border-color: rgba(138, 123, 255, 0.65);
+}
+
+/* Nav: clean tabs */
+.nav a {
+  border: 1px solid rgba(20, 18, 42, 0.14);
+  padding: 4px 8px;
+  background: rgba(251, 251, 255, 0.82);
+  color: rgba(20, 18, 42, 0.9);
+}
+.nav a:hover {
+  text-decoration: none;
+  border-color: rgba(138, 123, 255, 0.55);
+}
+
+/* Subtle arc ornament on a couple sections (safe if IDs exist) */
+#identity.card::before,
+#attributes.card::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  border: 1px solid rgba(138, 123, 255, 0.22);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  transform: rotate(12deg);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+/* Print: pristine, thin lines */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .card {
+    background: #fff !important;
+    box-shadow: none !important;
+    border-color: #000 !important;
+  }
+
+  h2,
+  h3,
+  label,
+  caption,
+  legend {
+    color: #000 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid transparent !important;
+    border-bottom-color: #000 !important;
+  }
+
+  #identity.card::before,
+  #attributes.card::before {
+    display: none !important;
+  }
+}

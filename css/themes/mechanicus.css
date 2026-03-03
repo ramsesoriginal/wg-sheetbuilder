@@ -1,0 +1,214 @@
+/* mechanicus.css — Theme #2: "Mechanicus Technical Blueprint / Skitarii Order"
+   Target: engineering schematic on a dark slate deck, with cyan grid + brass/red accents.
+*/
+
+:root {
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-display:
+    Rajdhani, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  /* Core palette */
+  --page-bg: #07090b; /* void */
+  --card-bg: #0c1217; /* slate panel */
+  --ink: #d7efe8; /* blueprint ink */
+  --ink-soft: rgba(215, 239, 232, 0.82);
+  --muted: rgba(215, 239, 232, 0.58);
+
+  --line-color: rgba(77, 214, 255, 0.22);
+  --line-strong-color: rgba(77, 214, 255, 0.42);
+
+  --accent: #4dd6ff; /* cyan */
+  --accent-2: #b07a2a; /* brass */
+  --stamp: #a32121; /* martian red */
+
+  /* Fields */
+  --field-bg: rgba(7, 9, 11, 0.28);
+  --field-line: rgba(77, 214, 255, 0.36);
+  --field-focus: rgba(77, 214, 255, 0.7);
+}
+
+/* Blueprint grid background */
+body {
+  background:
+    radial-gradient(900px 500px at 50% 0%, rgba(77, 214, 255, 0.1), transparent 55%),
+    radial-gradient(700px 400px at 10% 40%, rgba(176, 122, 42, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 90% 55%, rgba(163, 33, 33, 0.06), transparent 65%),
+    repeating-linear-gradient(0deg, rgba(77, 214, 255, 0.07) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(90deg, rgba(77, 214, 255, 0.06) 0 1px, transparent 1px 56px),
+    linear-gradient(180deg, #07090b, #06080a 70%, #05070a);
+}
+
+/* Panels: crisp, engineered */
+.card {
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, rgba(77, 214, 255, 0.04), transparent 35%), var(--card-bg);
+  border: 1px solid var(--line-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Headings: technical annotation style */
+h2,
+h3,
+.brand strong,
+.nav a,
+label,
+caption,
+legend {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* “Datum label” bars for prominent titles (only where present) */
+.card > h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong-color);
+  background: rgba(77, 214, 255, 0.05);
+}
+.card > h2::before {
+  content: "▸";
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+/* Inputs: crisp cyan underlines, engineering mono */
+input,
+textarea,
+select {
+  font-family: var(--font-mono);
+  background: var(--field-bg);
+  border-bottom-color: var(--field-line);
+}
+
+/* Make “important” numeric boxes look like instrument readouts */
+input[type="number"] {
+  background: linear-gradient(90deg, rgba(77, 214, 255, 0.08), transparent 45%), var(--field-bg);
+}
+
+/* Buttons: order tabs */
+button {
+  border-color: var(--line-strong-color);
+  background: rgba(77, 214, 255, 0.05);
+}
+button:hover {
+  border-color: var(--accent-2);
+}
+
+/* Nav tabs: look like control labels */
+.nav a {
+  border: 1px solid var(--line-color);
+  padding: 4px 8px;
+  background: rgba(7, 9, 11, 0.35);
+}
+.nav a:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+}
+
+/* Add subtle “callout corners” to key sections (safe: only if IDs exist) */
+#attributes.card,
+#skills.card,
+#gear.card,
+#powers.card,
+#injuries.card {
+  position: relative;
+}
+#attributes.card::before,
+#skills.card::before,
+#gear.card::before,
+#powers.card::before,
+#injuries.card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+  border: 1px dashed rgba(77, 214, 255, 0.22);
+  mask:
+    linear-gradient(#000, #000) content-box,
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  /* corner breaks */
+  padding: 12px;
+}
+
+/* Tiny “checksum” tag (subtle flavor; only if those IDs exist) */
+#attributes.card::after {
+  content: "DATUM: A-001 | CHECKSUM: 9F3C";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(215, 239, 232, 0.6);
+  border: 1px solid rgba(77, 214, 255, 0.25);
+  padding: 4px 6px;
+  background: rgba(7, 9, 11, 0.35);
+}
+
+/* Portrait: technical frame */
+.picture__frame {
+  border-color: rgba(77, 214, 255, 0.35);
+}
+.picture__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(77, 214, 255, 0.2), transparent 40%),
+    linear-gradient(315deg, rgba(176, 122, 42, 0.12), transparent 45%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+/* Print: blueprint should become clean engineering sheet */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .card {
+    background: #fff !important;
+    box-shadow: none !important;
+    border-color: #000 !important;
+  }
+
+  h2,
+  h3,
+  label,
+  caption,
+  legend {
+    color: #000 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: transparent !important;
+    color: #000 !important;
+    border-bottom-color: #000 !important;
+  }
+
+  #attributes.card::after {
+    color: #000 !important;
+    border-color: #000 !important;
+    background: transparent !important;
+  }
+
+  #attributes.card::before,
+  #skills.card::before,
+  #gear.card::before,
+  #powers.card::before,
+  #injuries.card::before {
+    border-color: #000 !important;
+  }
+}

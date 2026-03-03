@@ -1,0 +1,217 @@
+/* base-style.css — shared primitives (no layout changes)
+   Goal: make inputs feel like "fields on a document", not web controls.
+*/
+
+:root {
+  /* Required by layout.css usage */
+  --gap: var(--gap-3);
+  --line: 1px solid var(--line-color);
+
+  /* Typography */
+  --font-body: ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  --fs-0: 12px;
+  --fs-1: 13px;
+  --fs-2: 15px;
+  --fs-3: 18px;
+  --fs-4: 22px;
+
+  /* Neutral fallback colors (theme overrides these) */
+  --page-bg: #0e0f10;
+  --card-bg: #151618;
+  --ink: #f2f2f2;
+  --ink-soft: #d6d6d6;
+  --muted: #a7a7a7;
+
+  --line-color: rgba(255, 255, 255, 0.22);
+  --line-strong-color: rgba(255, 255, 255, 0.38);
+
+  --accent: #a9c2ff;
+  --stamp: #d96b6b;
+
+  /* Fields */
+  --field-bg: rgba(255, 255, 255, 0.04);
+  --field-line: rgba(255, 255, 255, 0.26);
+  --field-focus: rgba(255, 255, 255, 0.6);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--page-bg);
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  line-height: 1.25;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Head + nav (kept subtle; themes can push harder) */
+.brand strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+.muted {
+  color: var(--muted);
+}
+
+.nav {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+}
+.nav a {
+  font-family: var(--font-display);
+  font-size: var(--fs-1);
+  opacity: 0.9;
+}
+.nav a:hover {
+  opacity: 1;
+}
+
+/* Cards / sections */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--line-color);
+}
+
+/* Labels */
+label,
+caption,
+legend {
+  font-family: var(--font-display);
+  font-size: var(--fs-1);
+  color: var(--ink-soft);
+}
+
+/* Inputs: "un-form" baseline */
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--field-bg);
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--field-line);
+  padding: 8px 10px;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 44px;
+}
+
+input.num,
+td .num {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+select {
+  appearance: none;
+}
+
+/* Focus (subtle but real) */
+:focus-visible {
+  outline: 2px solid var(--field-focus);
+  outline-offset: 2px;
+}
+
+/* Buttons: look like stamped controls, not pill UI */
+button {
+  background: transparent;
+  border: 1px solid var(--line-strong-color);
+  padding: 8px 10px;
+  font-family: var(--font-display);
+  font-size: var(--fs-1);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+button:hover {
+  border-color: var(--accent);
+}
+button:active {
+  transform: translateY(1px);
+}
+
+/* Tables */
+.sheet-table {
+  border-collapse: collapse;
+  font-size: var(--fs-1);
+}
+.sheet-table th,
+.sheet-table td {
+  border-bottom: 1px solid var(--line-color);
+  padding: 6px 8px;
+}
+.sheet-table thead th {
+  font-family: var(--font-display);
+  font-size: var(--fs-1);
+  letter-spacing: 0.03em;
+}
+
+/* Portrait frame */
+.picture__frame {
+  border: 1px solid var(--line-color);
+  overflow: hidden;
+}
+.picture__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Print baseline: kill heavy backgrounds while keeping structure */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .card {
+    background: transparent;
+    border-color: #000;
+  }
+
+  input,
+  textarea,
+  select {
+    background: transparent;
+    color: #000;
+    border-bottom-color: #000;
+  }
+
+  button,
+  .screen-only {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

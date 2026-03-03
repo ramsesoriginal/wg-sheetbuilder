@@ -1,0 +1,133 @@
+/* administratum.css — Theme #1: "Administratum Document"
+   Bureaucratic dossier: paper, lines, stamp accents, form headers.
+*/
+
+:root {
+  --font-body: "IBM Plex Serif", ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display:
+    "IBM Plex Sans Condensed", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  --page-bg: #1a1a18; /* dark desk */
+  --card-bg: #f2efe6; /* paper */
+  --ink: #1b1a17; /* ink */
+  --ink-soft: #2a2925;
+  --muted: #5e5a52;
+
+  --line-color: rgba(27, 26, 23, 0.28);
+  --line-strong-color: rgba(27, 26, 23, 0.5);
+
+  --accent: #1c2a33; /* blue-black */
+  --stamp: #7a1f1f; /* red stamp */
+
+  --field-bg: rgba(255, 255, 255, 0.55);
+  --field-line: rgba(27, 26, 23, 0.35);
+  --field-focus: rgba(122, 31, 31, 0.55);
+}
+
+/* “Desk + paper stack” feel */
+body {
+  background:
+    radial-gradient(1200px 700px at 50% 10%, rgba(255, 255, 255, 0.08), transparent 60%),
+    linear-gradient(180deg, #141412, #1a1a18 60%, #121210);
+}
+
+/* Paper texture + tiny registration grid */
+.card {
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.02)),
+    repeating-linear-gradient(90deg, rgba(27, 26, 23, 0.035) 0 1px, transparent 1px 56px),
+    repeating-linear-gradient(0deg, rgba(27, 26, 23, 0.03) 0 1px, transparent 1px 44px),
+    var(--card-bg);
+}
+
+/* Headings look like form section headers */
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+/* Add a “form header bar” vibe to section titles (where visible) */
+.card > h2 {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong-color);
+  background: rgba(27, 26, 23, 0.03);
+}
+
+/* Inputs feel typed */
+input,
+textarea,
+select {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+/* Make number boxes a bit more “form-like” */
+input[type="number"] {
+  padding-right: 8px;
+}
+
+/* Buttons as bureaucratic tabs */
+button {
+  border-color: rgba(27, 26, 23, 0.55);
+  background: rgba(27, 26, 23, 0.03);
+}
+button:hover {
+  border-color: var(--stamp);
+}
+
+/* Tiny stamp accent on cards (subtle, not everywhere) */
+#identity.card::after,
+#skills.card::after,
+#gear.card::after {
+  content: "FILE COPY";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(122, 31, 31, 0.75);
+  border: 1px solid rgba(122, 31, 31, 0.55);
+  padding: 4px 6px;
+  transform: rotate(-2deg);
+  background: rgba(242, 239, 230, 0.6);
+}
+
+/* Links/nav read as “index tabs” */
+.nav a {
+  border: 1px solid rgba(27, 26, 23, 0.35);
+  padding: 4px 8px;
+  background: rgba(242, 239, 230, 0.65);
+}
+.nav a:hover {
+  text-decoration: none;
+  border-color: var(--stamp);
+}
+
+/* Print: keep it clean paper */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .card {
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  #identity.card::after,
+  #skills.card::after,
+  #gear.card::after {
+    color: #000;
+    border-color: #000;
+    background: transparent;
+  }
+}
